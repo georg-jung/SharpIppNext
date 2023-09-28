@@ -19,7 +19,7 @@ public partial class ExplicitTests
         {
             RequestId = 1,
             IppOperation = (IppOperation)0x000A,
-            Version = IppVersion.V11,
+            Version = IppVersion.V1_1,
         };
 
         request.OperationAttributes.AddRange(new[]

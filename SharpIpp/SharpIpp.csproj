@@ -4,33 +4,30 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NullableReferenceTypes>true</NullableReferenceTypes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageIcon>ipp256.png</PackageIcon>
     <PackageIconUrl />
-    <PackageProjectUrl>https://github.com/Zelenov/SharpIpp</PackageProjectUrl>
-    <Version>0.10.0.0</Version>
-    <Authors>Evgeny Zelenov</Authors>
-    <Description>C# implementation of Internet Printing Protocol/1.1 and CUPS 1.0</Description>
+    <PackageProjectUrl>https://github.com/danielklecha/SharpIppNext</PackageProjectUrl>
+    <Authors>Daniel Klecha;Evgeny Zelenov</Authors>
+    <Description>C# implementation of IPP client and IPP server</Description>
     <PackageTags>ipp, Internet Printing Protocol, rfc2911, print, printer, cups</PackageTags>
-    <PackageLicenseExpression>
-    </PackageLicenseExpression>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Copyright>Evgeny Zelenov</Copyright>
-    <RepositoryUrl>https://github.com/Zelenov/SharpIpp.git</RepositoryUrl> 
-    <RepositoryType>git</RepositoryType> 
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<PackageLicenseFile></PackageLicenseFile>
+    <Copyright>Daniel Klecha and Evgeny Zelenov</Copyright>
+    <RepositoryUrl>https://github.com/danielklecha/SharpIppNext.git</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType>
+	<Product>SharpIppNext</Product>
+	<PackageId>SharpIppNext</PackageId>
+	<Version>1.0.0.0</Version>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
    <ItemGroup>
     <None Include="..\ipp256.png">
       <Pack>True</Pack>
-      <PackagePath>
-      </PackagePath>
-    </None>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>
-      </PackagePath>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-
 </Project>

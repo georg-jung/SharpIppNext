@@ -7,7 +7,7 @@ namespace SharpIpp.Protocol.Models
     {
         public Stream? Document { get; set; }
 
-        public IppVersion Version { get; set; } = IppVersion.V11;
+        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
         public IppOperation IppOperation { get; set; }
 

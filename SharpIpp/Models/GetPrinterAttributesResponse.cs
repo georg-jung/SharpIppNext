@@ -197,7 +197,7 @@ namespace SharpIpp.Models
 
         public PrintScaling[]? PrintScalingSupported { get; set; }
 
-        public IppVersion Version { get; set; } = IppVersion.V11;
+        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
         public IppStatusCode StatusCode { get; set; }
 

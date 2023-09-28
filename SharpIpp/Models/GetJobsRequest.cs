@@ -63,7 +63,7 @@ namespace SharpIpp.Models
         /// </summary>
         public bool? MyJobs { get; set; }
 
-        public IppVersion Version { get; set; } = IppVersion.V11;
+        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
         public int RequestId { get; set; } = 1;
 

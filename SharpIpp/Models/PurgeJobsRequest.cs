@@ -23,7 +23,7 @@ namespace SharpIpp.Models
     /// </summary>
     public class PurgeJobsRequest : IIppPrinterRequest
     {
-        public IppVersion Version { get; set; } = IppVersion.V11;
+        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
         public int RequestId { get; set; } = 1;
 

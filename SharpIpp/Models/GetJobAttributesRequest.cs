@@ -32,7 +32,7 @@ namespace SharpIpp.Models
         /// </summary>
         public string[]? RequestedAttributes { get; set; }
 
-        public IppVersion Version { get; set; } = IppVersion.V11;
+        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
         public Uri PrinterUri { get; set; } = null!;
 
