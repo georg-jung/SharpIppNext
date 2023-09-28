@@ -27,6 +27,4 @@ dotnet add package SharpIppNext
 
 ## License
 
-Copyright © Daniel Klecha, Evgeny Zelenov
-
-Spectre.Console is provided as-is under the MIT license. For more information see LICENSE.
+SharpIpp is provided as-is under the MIT license. See [LICENSE.txt](LICENSE.txt) for details.
