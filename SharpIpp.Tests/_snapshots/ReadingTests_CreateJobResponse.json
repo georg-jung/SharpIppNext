@@ -2,14 +2,6 @@
   "Version": 257,
   "StatusCode": 0,
   "RequestId": 1,
-  "JobUri": "ipp://10.30.254.250:631/print/job108",
-  "JobId": 108,
-  "JobState": 3,
-  "JobStateReasons": [
-    "job-data-insufficient"
-  ],
-  "JobStateMessage": "The job data was insufficient",
-  "NumberOfInterveningJobs": null,
   "Sections": [
     {
       "Tag": 1,

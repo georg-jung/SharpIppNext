@@ -75,7 +75,7 @@ public class PrinterJob : IEquatable<PrinterJob>, IDisposable, IAsyncDisposable
     {
         switch (state)
         {
-            case null when State == JobState.Pending:
+            case null when !State.HasValue || State == JobState.Pending:
                 State = state;
                 return true;
             case JobState.Pending when !State.HasValue || State == JobState.Aborted:

@@ -254,13 +254,6 @@ public partial class ExplicitTests
     }
 
     [Test]
-    public async Task GetJobAttributesAsync82()
-    {
-        var request = new GetJobAttributesRequest { PrinterUri = Options.Value.PrinterUrl, JobId = 82 };
-        await TestRequestAsync(request, (client, r) => client.GetJobAttributesAsync(r));
-    }
-
-    [Test]
     public async Task GetJobsAsync_Default()
     {
         var request = new GetJobsRequest { PrinterUri = Options.Value.PrinterUrl, WhichJobs = WhichJobs.Completed };
@@ -352,7 +345,7 @@ public partial class ExplicitTests
         {
             var request = new CancelJobRequest { PrinterUri = Options.Value.PrinterUrl, JobId = jobId };
             return await TestRequestAsync(request, (client, r) => client.CancelJobAsync(r));
-        });
+        }, false);
     }
 
     [Test]
@@ -547,7 +540,7 @@ public partial class ExplicitTests
             }));
     }
 
-    private async Task<TOut> TestJobRequestAsync<TOut>(Func<int, Task<TOut>> runFunc)
+    private async Task<TOut> TestJobRequestAsync<TOut>(Func<int, Task<TOut>> runFunc, bool cancelOnFinish = true)
         where TOut : IIppResponseMessage
     {
         var jobId = await CreateJobAsync();
@@ -559,7 +552,8 @@ public partial class ExplicitTests
         }
         finally
         {
-            await CancelJobAsync(jobId);
+            if (cancelOnFinish)
+                await CancelJobAsync(jobId);
         }
     }
 

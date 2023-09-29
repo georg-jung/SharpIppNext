@@ -11,7 +11,7 @@ using SharpIpp.Models;
 using SharpIpp.Protocol;
 using SharpIpp.Protocol.Models;
 using SharpIpp.Tests.Extensions;
-
+using SharpIpp.Tests.Models;
 using Snapper;
 
 using Range = SharpIpp.Protocol.Models.Range;
@@ -427,7 +427,7 @@ public class ConstructTests
         Assert.NotNull(request);
         Test.AddJsonAttachment(request, "request.json");
 
-        var options = new JsonSerializerOptions { WriteIndented = true, Converters = { new StreamConverter() } };
+        var options = new JsonSerializerOptions { WriteIndented = true, Converters = { new StreamConverter(), new IppVersionJsonConverter() } };
         var serialized = JsonSerializer.Serialize(request, options);
 
         Console.WriteLine(serialized);

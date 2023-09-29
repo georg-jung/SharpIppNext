@@ -16,7 +16,7 @@ namespace SharpIpp.Mapping.Profiles
                 return dst;
             });
 
-            mapper.CreateMap<IppRequestMessage, RestartJobRequest>( ( src, map ) =>
+            mapper.CreateMap<IIppRequestMessage, RestartJobRequest>( ( src, map ) =>
             {
                 var dst = new RestartJobRequest();
                 map.Map<IIppRequestMessage, IIppJobRequest>( src, dst );

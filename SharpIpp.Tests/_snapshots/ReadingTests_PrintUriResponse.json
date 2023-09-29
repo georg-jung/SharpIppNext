@@ -2,14 +2,6 @@
   "Version": 257,
   "StatusCode": 0,
   "RequestId": 1,
-  "JobUri": "ipp://10.30.254.250:631/print/job125",
-  "JobId": 125,
-  "JobState": 3,
-  "JobStateReasons": [
-    "none"
-  ],
-  "JobStateMessage": "none",
-  "NumberOfInterveningJobs": null,
   "Sections": [
     {
       "Tag": 1,

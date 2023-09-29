@@ -16,10 +16,10 @@ namespace SharpIpp.Mapping.Profiles
                 return dst;
             });
 
-            mapper.CreateMap<IppRequestMessage, PausePrinterRequest>( ( src, map ) =>
+            mapper.CreateMap<IIppRequestMessage, PausePrinterRequest>( ( src, map ) =>
             {
                 var dst = new PausePrinterRequest();
-                map.Map<IppRequestMessage, IIppPrinterRequest>( src, dst );
+                map.Map<IIppRequestMessage, IIppPrinterRequest>( src, dst );
                 return dst;
             } );
 

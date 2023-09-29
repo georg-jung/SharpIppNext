@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ using SharpIpp.Mapping.Profiles;
 using SharpIpp.Models;
 using SharpIpp.Protocol;
 using SharpIpp.Tests.Extensions;
-
+using SharpIpp.Tests.Models;
 using Snapper;
 
 namespace SharpIpp.Tests;
@@ -198,8 +199,12 @@ public class ReadingTests
         Assert.NotNull(response);
         Test.AddJsonAttachment(response, "response.json");
         Test.AddJsonAttachment(response.Sections, "attributes.json");
-        Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
-        response.ShouldMatchSnapshot();
+
+        var options = new JsonSerializerOptions { WriteIndented = true, Converters = { new StreamConverter(), new IppVersionJsonConverter() } };
+        var serialized = System.Text.Json.JsonSerializer.Serialize( response, options );
+
+        Console.WriteLine( serialized );
+        serialized.ShouldMatchSnapshot();
     }
     
     private Task<IIppResponseMessage> ReadIppResponse(string binFileName)

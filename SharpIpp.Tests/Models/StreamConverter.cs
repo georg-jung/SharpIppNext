@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SharpIpp.Tests;
+namespace SharpIpp.Tests.Models;
 
 public class StreamConverter : JsonConverter<Stream>
 {

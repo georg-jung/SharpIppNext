@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
-
 using NUnit.Framework;
+using SharpIpp.Tests.Models;
 
 namespace SharpIpp.Tests.Extensions;
 

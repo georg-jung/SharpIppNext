@@ -80,7 +80,7 @@
     },
     {
       "Tag": 35,
-      "Name": "orientation-srced",
+      "Name": "orientation-requested",
       "Value": 3
     },
     {
@@ -95,7 +95,7 @@
     {
       "Tag": 35,
       "Name": "print-quality",
-      "Value": 3
+      "Value": 4
     },
     {
       "Tag": 68,
