@@ -27,4 +27,4 @@ dotnet add package SharpIppNext
 
 ## License
 
-SharpIpp is provided as-is under the MIT license. See [LICENSE.txt](LICENSE.txt) for details.
+SharpIppNext is provided as-is under the MIT license.
