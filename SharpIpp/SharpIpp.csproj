@@ -20,7 +20,7 @@
     <RepositoryType>git</RepositoryType>
 	<Product>SharpIppNext</Product>
 	<PackageId>SharpIppNext</PackageId>
-	<Version>1.0.2.0</Version>
+	<Version>1.0.3.0</Version>
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageReadmeFile>README.md</PackageReadmeFile>

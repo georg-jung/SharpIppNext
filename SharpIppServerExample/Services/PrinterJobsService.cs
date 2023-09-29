@@ -569,7 +569,7 @@ public class PrinterJobsService : IDisposable, IAsyncDisposable
         _logger.LogDebug( "Job {id} has been completed", job.Id );
     }
 
-    public async Task AddAbortedJobAsync( int jobId )
+    public async Task AddAbortedJobAsync( int jobId, Exception ex )
     {
         if (!_jobs.TryGetValue( jobId, out var job ))
             return;
@@ -578,7 +578,7 @@ public class PrinterJobsService : IDisposable, IAsyncDisposable
             return;
         if (!_jobs.TryUpdate( jobId, copy, job ))
             return;
-        _logger.LogDebug( "Job {id} has been aborted", job.Id );
+        _logger.LogDebug( ex, "Job {id} has been aborted", job.Id );
     }
 
     private async Task<PrintJobResponse> GetPrintJobResponseAsync( PrintJobRequest request )

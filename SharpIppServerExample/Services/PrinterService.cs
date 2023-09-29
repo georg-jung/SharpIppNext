@@ -52,7 +52,7 @@ namespace SharpIppServerExample.Services
             }
             catch ( Exception ex )
             {
-                await _printerJobService.AddAbortedJobAsync( job.Id );
+                await _printerJobService.AddAbortedJobAsync( job.Id, ex );
             }
         }
 

@@ -37,7 +37,14 @@ public partial class SharpIppServer
     {
         var request = await ReceiveRawRequestAsync( stream, cancellationToken );
         ValidateRawRequest( request );
-        return request.IppOperation switch
+        return await ReceiveRequestAsync( request );
+    }
+
+    public Task<IIppRequest> ReceiveRequestAsync(
+        IIppRequestMessage request,
+        CancellationToken cancellationToken = default )
+    {
+        IIppRequest mappedRequest = request.IppOperation switch
         {
             IppOperation.CancelJob => Mapper.Map<IIppRequestMessage, CancelJobRequest>( request ),
             IppOperation.CreateJob => Mapper.Map<IIppRequestMessage, CreateJobRequest>( request ),
@@ -58,9 +65,10 @@ public partial class SharpIppServer
             IppOperation.ValidateJob => Mapper.Map<IIppRequestMessage, ValidateJobRequest>( request ),
             _ => throw new IppRequestException( $"Unable to handle {request.IppOperation} operation", request, IppStatusCode.ClientErrorBadRequest )
         };
+        return Task.FromResult( mappedRequest );
     }
 
-    private void ValidateRawRequest( IIppRequestMessage request )
+    public void ValidateRawRequest( IIppRequestMessage request )
     {
         if (request.RequestId <= 0)
             throw new IppRequestException( "Bad request-id value", request, IppStatusCode.ClientErrorBadRequest );
