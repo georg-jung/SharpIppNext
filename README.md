@@ -13,7 +13,7 @@ A .NET Standard library that can be used as IPP client and IPP server.
 
 ## Installing
 
-The fastest way of getting started using `Spectre.Console` is to install the NuGet package.
+The fastest way of getting started using `SharpIppNext` is to install the NuGet package.
 
 ```csharp
 dotnet add package SharpIppNext
