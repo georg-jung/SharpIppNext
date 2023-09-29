@@ -23,6 +23,7 @@
 	<Version>1.0.1.0</Version>
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
    <ItemGroup>
     <None Include="..\ipp256.png">
