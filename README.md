@@ -2,7 +2,8 @@
 
 [![NuGet](https://img.shields.io/nuget/v/SharpIppNext.svg)](https://www.nuget.org/packages/SharpIppNext)
 [![NuGet downloads](https://img.shields.io/nuget/dt/SharpIppNext.svg)](https://www.nuget.org/packages/SharpIppNext)
-[![](https://img.shields.io/badge/Docs-GitHub%20wiki-brightgreen)](https://github.com/danielklecha/SharpIppNext/wiki)
+[![Wiki](https://img.shields.io/badge/Docs-GitHub%20Wiki-green)](https://github.com/danielklecha/SharpIppNext/wiki)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/danielklecha/SharpIppNext/blob/master/LICENSE.txt)
 
 A .NET Standard library that can be used as IPP client and IPP server.
 
