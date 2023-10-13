@@ -198,6 +198,9 @@ namespace SharpIpp.Protocol
                 case Range v:
                     Write(v, stream);
                     break;
+                case StringWithLanguage v:
+                    Write(v, stream);
+                    break;
                 default: throw new ArgumentException($"Type {value?.GetType()} not supported in ipp");
             }
         }
