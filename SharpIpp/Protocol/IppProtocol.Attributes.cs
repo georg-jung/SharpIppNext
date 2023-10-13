@@ -105,7 +105,7 @@ namespace SharpIpp.Protocol
                 minute,
                 second,
                 decisecond * 100,
-                new TimeSpan(offsetHour * offsetDir, offsetMinute, 0));
+                new TimeSpan(offsetHour * offsetDir, offsetMinute * offsetDir, 0));
             return dateTimeOffset;
         }
 
