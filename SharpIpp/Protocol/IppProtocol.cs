@@ -33,16 +33,6 @@ namespace SharpIpp.Protocol
     {
         public async Task WriteIppRequestAsync(IIppRequestMessage ippRequestMessage, Stream stream, CancellationToken cancellationToken = default)
         {
-            if (ippRequestMessage == null)
-            {
-                throw new ArgumentException($"{nameof(ippRequestMessage)}");
-            }
-
-            if (stream == null)
-            {
-                throw new ArgumentException($"{nameof(stream)}");
-            }
-
             using var writer = new BinaryWriter(stream, Encoding.ASCII, true);
             writer.WriteBigEndian( ippRequestMessage.Version.ToInt16BigEndian() );
             writer.WriteBigEndian( (short)ippRequestMessage.IppOperation );
@@ -104,16 +94,11 @@ namespace SharpIpp.Protocol
                         attributes = section.Attributes;
                         break;
                     default:
+                        if (attributes == null)
+                            throw new ArgumentException( $"Section start tag not found in stream. Expected < 0x06. Actual: {data}" );
                         var attribute = ReadAttribute((Tag)data, reader, prevAttribute);
                         prevAttribute = attribute;
-
-                        if (attributes == null)
-                        {
-                            throw new ArgumentException($"Section start tag not found in stream. Expected < 0x06. Actual: {data}");
-                        }
-
                         attributes.Add(attribute);
-
                         break;
                 }
             }
@@ -201,20 +186,12 @@ namespace SharpIpp.Protocol
                 case StringWithLanguage v:
                     Write(v, stream);
                     break;
-                default: throw new ArgumentException($"Type {value?.GetType()} not supported in ipp");
+                default: throw new ArgumentException($"Type {value.GetType()} not supported in ipp");
             }
         }
 
         public Task WriteIppResponseAsync( IIppResponseMessage ippResponseMessage, Stream stream, CancellationToken cancellationToken = default )
         {
-            if ( ippResponseMessage == null )
-            {
-                throw new ArgumentException( $"{nameof( ippResponseMessage )}" );
-            }
-            if ( stream == null )
-            {
-                throw new ArgumentException( $"{nameof( stream )}" );
-            }
             using var writer = new BinaryWriter( stream, Encoding.ASCII, true );
             writer.WriteBigEndian( ippResponseMessage.Version.ToInt16BigEndian() );
             writer.WriteBigEndian( (short)ippResponseMessage.StatusCode );
@@ -307,14 +284,12 @@ namespace SharpIpp.Protocol
         {
             var len = stream.ReadInt16BigEndian();
             var name = Encoding.ASCII.GetString(stream.ReadBytes(len));
-            var value = ReadValue(stream, tag);
             var normalizedName = string.IsNullOrEmpty(name) && prevAttribute != null ? prevAttribute.Name : name;
-
             if (string.IsNullOrEmpty(normalizedName))
             {
                 throw new ArgumentException("0 length attribute name found not in a 1setOf");
             }
-
+            var value = ReadValue( stream, tag );
             var attribute = new IppAttribute(tag, normalizedName, value);
             return attribute;
         }
