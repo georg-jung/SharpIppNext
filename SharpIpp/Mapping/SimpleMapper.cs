@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SharpIpp.Mapping
 {
-    internal class SimpleMapper : IMapper
+    public class SimpleMapper : IMapper
     {
         private readonly Dictionary<(Type src, Type dst), Func<object, object, SimpleMapper, object>> _dictionary =
             new Dictionary<(Type src, Type dst), Func<object, object, SimpleMapper, object>>();

@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIpp.Tests", "SharpIpp.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIppServerExample", "SharpIppServerExample\SharpIppServerExample.csproj", "{DF4FFED2-D990-4D16-BE15-5DF5B244F9FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpIppClientExample", "SharpIppClientExample\SharpIppClientExample.csproj", "{7ED644D7-06E3-42DE-9673-6A7DE3E6B7BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIppClientExample", "SharpIppClientExample\SharpIppClientExample.csproj", "{7ED644D7-06E3-42DE-9673-6A7DE3E6B7BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIppTests", "SharpIppTests\SharpIppTests.csproj", "{918F0853-35FC-4283-B9A6-9346837CE41A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6228B57D-8C9C-4130-B0B5-35AC84093DBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,10 @@ Global
 		{7ED644D7-06E3-42DE-9673-6A7DE3E6B7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ED644D7-06E3-42DE-9673-6A7DE3E6B7BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ED644D7-06E3-42DE-9673-6A7DE3E6B7BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{918F0853-35FC-4283-B9A6-9346837CE41A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{918F0853-35FC-4283-B9A6-9346837CE41A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{918F0853-35FC-4283-B9A6-9346837CE41A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{918F0853-35FC-4283-B9A6-9346837CE41A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

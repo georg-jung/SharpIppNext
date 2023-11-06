@@ -5,7 +5,7 @@ using SharpIpp.Protocol.Models;
 namespace SharpIpp.Mapping.Profiles
 {
     // ReSharper disable once UnusedMember.Global
-    internal class TypesProfile : IProfile
+    public class TypesProfile : IProfile
     {
         public void CreateMaps(IMapperConstructor mapper)
         {

@@ -3,7 +3,7 @@ using System;
 
 namespace SharpIpp.Mapping
 {
-    internal interface IMapperConstructor
+    public interface IMapperConstructor
     {
         void CreateMap<TSource, TDest>(Func<TSource, IMapperApplier, TDest> mapFunc);
         void CreateMap<TSource, TDest>(Func<TSource, TDest, IMapperApplier, TDest> mapFunc);

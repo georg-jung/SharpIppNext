@@ -1,7 +1,7 @@
 ﻿#nullable disable
 namespace SharpIpp.Mapping
 {
-    internal interface IMapperApplier
+    public interface IMapperApplier
     {
         TDest Map<TDest>(object source);
 
