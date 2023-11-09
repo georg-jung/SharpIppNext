@@ -16,12 +16,22 @@ namespace SharpIpp;
 public partial class SharpIppServer
 {
     private static readonly Lazy<IMapper> MapperSingleton;
-    private readonly IIppProtocol _ippProtocol = new IppProtocol();
+    private readonly IIppProtocol _ippProtocol;
     private IMapper Mapper => MapperSingleton.Value;
 
     static SharpIppServer()
     {
         MapperSingleton = new Lazy<IMapper>( MapperFactory );
+    }
+
+    public SharpIppServer()
+    {
+        _ippProtocol = new IppProtocol();
+    }
+
+    public SharpIppServer( IIppProtocol ippProtocol )
+    {
+        _ippProtocol = ippProtocol;
     }
 
     public Task<IIppRequestMessage> ReceiveRawRequestAsync(
@@ -89,14 +99,6 @@ public partial class SharpIppServer
         Stream stream,
         CancellationToken cancellationToken = default )
     {
-        if ( ippResponseMessage == null )
-        {
-            throw new ArgumentException( $"{nameof( ippResponseMessage )}" );
-        }
-        if ( stream == null )
-        {
-            throw new ArgumentException( $"{nameof( stream )}" );
-        }
         return _ippProtocol.WriteIppResponseAsync( ippResponseMessage, stream, cancellationToken );
     }
 
@@ -105,14 +107,6 @@ public partial class SharpIppServer
         Stream stream,
         CancellationToken cancellationToken = default ) where T : IIppResponseMessage
     {
-        if ( ippResponsMessage == null )
-        {
-            throw new ArgumentException( $"{nameof( ippResponsMessage )}" );
-        }
-        if ( stream == null )
-        {
-            throw new ArgumentException( $"{nameof( stream )}" );
-        }
         var ippResponse = Mapper.Map<IppResponseMessage>( ippResponsMessage );
         return _ippProtocol.WriteIppResponseAsync( ippResponse, stream, cancellationToken );
     }

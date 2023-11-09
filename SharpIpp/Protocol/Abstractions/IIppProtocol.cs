@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SharpIpp.Protocol
 {
-    internal interface IIppProtocol
+    public interface IIppProtocol
     {
         Task<IIppRequestMessage> ReadIppRequestAsync(Stream inputStream, CancellationToken cancellationToken = default);
         Task<IIppResponseMessage> ReadIppResponseAsync(Stream stream, CancellationToken cancellationToken = default);

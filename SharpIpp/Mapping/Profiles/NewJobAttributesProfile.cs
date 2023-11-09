@@ -122,10 +122,12 @@ namespace SharpIpp.Mapping.Profiles
                 dst.PrinterResolution = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.PrinterResolution )?.Value as Resolution?;
                 dst.PrintQuality = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.PrintQuality )?.Value is int printQuality && Enum.IsDefined( typeof( PrintQuality ), printQuality ) ? (PrintQuality)printQuality : null;
                 dst.PrintScaling = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.PrintScaling )?.Value is int printScaling && Enum.IsDefined( typeof( PrintScaling ), printScaling ) ? (PrintScaling)printScaling : null;
-                var knownOperationAttributeNames = new List<string> { JobAttribute.JobName, JobAttribute.IppAttributeFidelity };
-                dst.AdditionalOperationAttributes = src.OperationAttributes.Where( x => !knownOperationAttributeNames.Contains( x.Name ) ).ToList();
-                var knownJobAttributeNames = new List<string> { JobAttribute.JobName, JobAttribute.IppAttributeFidelity, JobAttribute.JobPriority, JobAttribute.JobHoldUntil, JobAttribute.MultipleDocumentHandling, JobAttribute.Copies, JobAttribute.Finishings, JobAttribute.PageRanges, JobAttribute.Sides, JobAttribute.NumberUp, JobAttribute.OrientationRequested, JobAttribute.Media, JobAttribute.PrinterResolution, JobAttribute.PrintQuality, JobAttribute.PrintScaling };
-                dst.AdditionalJobAttributes = src.JobAttributes.Where( x => !knownJobAttributeNames.Contains( x.Name ) ).ToList();
+                var additionalOperationAttributes = src.OperationAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
+                if (additionalOperationAttributes.Any())
+                    dst.AdditionalOperationAttributes = additionalOperationAttributes;
+                var additionalJobAttributes = src.JobAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
+                if (additionalJobAttributes.Any())
+                    dst.AdditionalJobAttributes = additionalJobAttributes;
                 return dst;
             } );
         }
