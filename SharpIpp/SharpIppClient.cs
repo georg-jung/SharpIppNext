@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -22,24 +23,29 @@ namespace SharpIpp
 
         private readonly bool _disposeHttpClient;
         private readonly HttpClient _httpClient;
-        private readonly IIppProtocol _ippProtocol = new IppProtocol();
+        private readonly IIppProtocol _ippProtocol;
 
         static SharpIppClient()
         {
             MapperSingleton = new Lazy<IMapper>(MapperFactory);
         }
 
-        public SharpIppClient() : this(new HttpClient(), true)
+        public SharpIppClient() : this(new HttpClient(), new IppProtocol(), true)
         {
         }
 
-        public SharpIppClient(HttpClient httpClient) : this(httpClient, false)
+        public SharpIppClient(HttpClient httpClient) : this(httpClient, new IppProtocol(), false )
         {
         }
 
-        internal SharpIppClient(HttpClient httpClient, bool disposeHttpClient)
+        public SharpIppClient(HttpClient httpClient, IIppProtocol ippProtocol) : this( httpClient, ippProtocol, false )
+        {
+        }
+
+        internal SharpIppClient(HttpClient httpClient, IIppProtocol ippProtocol, bool disposeHttpClient)
         {
             _httpClient = httpClient;
+            _ippProtocol = ippProtocol;
             _disposeHttpClient = disposeHttpClient;
         }
 
@@ -50,13 +56,12 @@ namespace SharpIpp
         ///     but response still contains valid ipp-data in the body that can be parsed for better error description
         ///     Seems like they are printer specific
         /// </summary>
-        public HttpStatusCode[] PlausibleHttpStatusCodes { get; set; } =
-        {
+        private static readonly HttpStatusCode[] _plausibleHttpStatusCodes = [
             HttpStatusCode.Continue,
             HttpStatusCode.Unauthorized,
             HttpStatusCode.Forbidden,
             HttpStatusCode.UpgradeRequired,
-        };
+        ];
 
         /// <inheritdoc />
         public async Task<IIppResponseMessage> SendAsync(
@@ -84,10 +89,7 @@ namespace SharpIpp
             }
             catch (HttpRequestException ex)
             {
-                var plausibleHttpStatusCodes = PlausibleHttpStatusCodes;
-                var isPlausibleHttpStatusCode = Array.IndexOf(plausibleHttpStatusCodes, response.StatusCode) >= 0;
-
-                if (!isPlausibleHttpStatusCode)
+                if (!_plausibleHttpStatusCodes.Contains(response.StatusCode))
                 {
                     throw;
                 }
@@ -101,11 +103,10 @@ namespace SharpIpp
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 ippResponse = await _ippProtocol.ReadIppResponseAsync(responseStream, cancellationToken).ConfigureAwait(false);
-
+                if (ippResponse == null)
+                    throw new Exception( "Unable to parse response" );
                 if (!ippResponse.IsSuccessfulStatusCode())
-                {
-                    throw new IppResponseException($"Printer returned error code\n{ippResponse}", ippResponse);
-                }
+                    throw new IppResponseException($"Printer returned error code", ippResponse);
             }
             catch
             {
@@ -122,12 +123,7 @@ namespace SharpIpp
                 return ippResponse;
             }
 
-            if (ippResponse != null)
-            {
-                throw new IppResponseException(httpException.Message, httpException, ippResponse);
-            }
-
-            throw httpException;
+            throw new IppResponseException(httpException.Message, httpException, ippResponse);
         }
 
         public void Dispose()

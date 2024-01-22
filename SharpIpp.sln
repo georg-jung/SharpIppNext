@@ -5,8 +5,6 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIpp", "SharpIpp\SharpIpp.csproj", "{4718D86A-C465-43C7-8A36-959F53C8E6DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIpp.Tests", "SharpIpp.Tests\SharpIpp.Tests.csproj", "{04CB48CC-C2D2-4861-888A-0F5A65EA5851}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIppServerExample", "SharpIppServerExample\SharpIppServerExample.csproj", "{DF4FFED2-D990-4D16-BE15-5DF5B244F9FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpIppClientExample", "SharpIppClientExample\SharpIppClientExample.csproj", "{7ED644D7-06E3-42DE-9673-6A7DE3E6B7BA}"
@@ -25,10 +23,6 @@ Global
 		{4718D86A-C465-43C7-8A36-959F53C8E6DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4718D86A-C465-43C7-8A36-959F53C8E6DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4718D86A-C465-43C7-8A36-959F53C8E6DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04CB48CC-C2D2-4861-888A-0F5A65EA5851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04CB48CC-C2D2-4861-888A-0F5A65EA5851}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04CB48CC-C2D2-4861-888A-0F5A65EA5851}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04CB48CC-C2D2-4861-888A-0F5A65EA5851}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF4FFED2-D990-4D16-BE15-5DF5B244F9FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DF4FFED2-D990-4D16-BE15-5DF5B244F9FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF4FFED2-D990-4D16-BE15-5DF5B244F9FF}.Release|Any CPU.ActiveCfg = Release|Any CPU

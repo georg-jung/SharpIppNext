@@ -30,6 +30,8 @@ namespace SharpIpp.Mapping.Profiles
             mapper.CreateIppMap<int, ResolutionUnit>((src, map) => (ResolutionUnit)src);
             mapper.CreateIppMap<int, PrinterType>((src, map) => (PrinterType)src);
             mapper.CreateIppMap<string, IppVersion>( ( src, map ) => new IppVersion( src ) );
+            mapper.CreateIppMap<NoValue, int>( ( src, map ) => 0 );
+            mapper.CreateIppMap<NoValue, JobState>( ( src, jobs) => 0);
 
             //All name parameters can come as StringWithLanguage or string
             //mappers for string\language mapping 

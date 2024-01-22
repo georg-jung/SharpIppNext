@@ -36,6 +36,9 @@ new List<string>
     $"/{printerOptions.Name}",
     "/ipp/printer",
     $"/ipp/printer/{printerOptions.Name}"
-}.ForEach( path => app.MapPost( path, async (HttpContext context, PrinterJobsService printerService) =>
-    await printerService.ProcessRequestAsync(context.Request.Body, context.Response.Body)));
+}.ForEach( path => app.MapPost( path, async ( HttpContext context, PrinterJobsService printerService ) =>
+    {
+        context.Response.ContentType = "application/ipp";
+        await printerService.ProcessRequestAsync( context.Request.Body, context.Response.Body );
+    } ) );
 app.Run();

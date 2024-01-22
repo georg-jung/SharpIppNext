@@ -11,8 +11,6 @@ using SharpIpp.Exceptions;
 using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
-[assembly: InternalsVisibleTo("SharpIpp.Tests")]
-
 namespace SharpIpp.Protocol
 {
     /// <summary>

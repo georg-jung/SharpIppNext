@@ -62,7 +62,7 @@ namespace SharpIpp.Mapping
             {
                 return (TDest)source;
             }
-
+            
             foreach (var (map, type) in PossiblePairs(sourceType, destType))
             {
                 switch (type)
