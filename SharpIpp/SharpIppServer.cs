@@ -38,6 +38,8 @@ public partial class SharpIppServer
         Stream stream,
         CancellationToken cancellationToken = default )
     {
+        if (stream == null)
+            throw new ArgumentNullException( nameof( stream ) );
         return _ippProtocol.ReadIppRequestAsync( stream, cancellationToken );
     }
 
@@ -54,6 +56,8 @@ public partial class SharpIppServer
         IIppRequestMessage request,
         CancellationToken cancellationToken = default )
     {
+        if (request == null)
+            throw new ArgumentNullException( nameof( request ) );
         IIppRequest mappedRequest = request.IppOperation switch
         {
             IppOperation.CancelJob => Mapper.Map<IIppRequestMessage, CancelJobRequest>( request ),

@@ -30,28 +30,34 @@ namespace SharpIpp.Protocol
     {
         public async Task WriteIppRequestAsync(IIppRequestMessage ippRequestMessage, Stream stream, CancellationToken cancellationToken = default)
         {
+            if (ippRequestMessage is null)
+                throw new ArgumentNullException( nameof( ippRequestMessage ) );
+            if (stream is null)
+                throw new ArgumentNullException( nameof( stream ) );
             using var writer = new BinaryWriter(stream, Encoding.ASCII, true);
             writer.WriteBigEndian( ippRequestMessage.Version.ToInt16BigEndian() );
             writer.WriteBigEndian( (short)ippRequestMessage.IppOperation );
             writer.WriteBigEndian( ippRequestMessage.RequestId );
             WriteSections(ippRequestMessage, writer);
-
             if (ippRequestMessage.Document != null)
             {
                 await ippRequestMessage.Document.CopyToAsync(stream, 81920, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        public async Task<IIppRequestMessage> ReadIppRequestAsync( Stream inputStream, CancellationToken cancellationToken = default )
+        public async Task<IIppRequestMessage> ReadIppRequestAsync( Stream stream, CancellationToken cancellationToken = default )
         {
-            using var reader = new BinaryReader( inputStream, Encoding.ASCII, true );
+            if (stream is null)
+                new ArgumentException( nameof( stream ) );
+            using var reader = new BinaryReader( stream, Encoding.ASCII, true );
             return await ReadIppRequestAsync( reader, cancellationToken );
         }
 
         public Task<IIppResponseMessage> ReadIppResponseAsync(Stream stream, CancellationToken cancellationToken = default)
         {
+            if (stream is null)
+                new ArgumentException( nameof( stream ) );
             var res = new IppResponseMessage();
-
             try
             {
                 using var reader = new BinaryReader(stream, Encoding.ASCII, true);
@@ -91,7 +97,7 @@ namespace SharpIpp.Protocol
                         attributes = section.Attributes;
                         break;
                     default:
-                        if (attributes == null)
+                        if (attributes is null)
                             throw new ArgumentException( $"Section start tag not found in stream. Expected < 0x06. Actual: {data}" );
                         var attribute = ReadAttribute((Tag)data, reader, prevAttribute);
                         prevAttribute = attribute;
@@ -102,7 +108,7 @@ namespace SharpIpp.Protocol
             while (true);
         }
 
-        public void ReadSections( BinaryReader reader, IIppRequestMessage res )
+        private void ReadSections( BinaryReader reader, IIppRequestMessage res )
         {
             IppAttribute? prevAttribute = null;
             List<IppAttribute>? attributes = null;
@@ -122,7 +128,7 @@ namespace SharpIpp.Protocol
                     case SectionTag.EndOfAttributesTag:
                         return;
                     default:
-                        if ( attributes == null )
+                        if ( attributes is null )
                         {
                             reader.BaseStream.Position--;
                             return;
@@ -153,6 +159,7 @@ namespace SharpIpp.Protocol
             var value = attribute.Value;
             WriteValue( value, stream );
         }
+
         public void WriteValue(object value, BinaryWriter stream)
         {
             //https://tools.ietf.org/html/rfc8010#section-3.5.2
@@ -182,12 +189,17 @@ namespace SharpIpp.Protocol
                 case StringWithLanguage v:
                     Write(v, stream);
                     break;
-                default: throw new ArgumentException($"Type {value.GetType()} not supported in ipp");
+                default:
+                    throw new ArgumentException($"Type {value.GetType()} not supported in ipp");
             }
         }
 
         public Task WriteIppResponseAsync( IIppResponseMessage ippResponseMessage, Stream stream, CancellationToken cancellationToken = default )
         {
+            if (ippResponseMessage is null)
+                throw new ArgumentNullException( nameof( ippResponseMessage ) );
+            if (stream is null)
+                throw new ArgumentNullException( nameof( stream ) );
             using var writer = new BinaryWriter( stream, Encoding.ASCII, true );
             writer.WriteBigEndian( ippResponseMessage.Version.ToInt16BigEndian() );
             writer.WriteBigEndian( (short)ippResponseMessage.StatusCode );
@@ -198,6 +210,8 @@ namespace SharpIpp.Protocol
 
         public object ReadValue(BinaryReader stream, Tag tag)
         {
+            if (stream is null)
+                throw new ArgumentNullException( nameof( stream ) );
             //https://tools.ietf.org/html/rfc8010#section-3.5.2
             return tag switch
             {
@@ -278,6 +292,8 @@ namespace SharpIpp.Protocol
 
         public IppAttribute ReadAttribute(Tag tag, BinaryReader stream, IppAttribute? prevAttribute)
         {
+            if (stream is null)
+                throw new ArgumentNullException( nameof( stream ) );
             var len = stream.ReadInt16BigEndian();
             var name = Encoding.ASCII.GetString(stream.ReadBytes(len));
             var normalizedName = string.IsNullOrEmpty(name) && prevAttribute != null ? prevAttribute.Name : name;
@@ -325,8 +341,12 @@ namespace SharpIpp.Protocol
 
         public void WriteSection( SectionTag sectionTag, List<IppAttribute> attributes, BinaryWriter writer )
         {
+            if (attributes is null)
+                throw new ArgumentNullException( nameof( attributes ) );
             if (!attributes.Any())
                 return;
+            if (writer is null)
+                throw new ArgumentNullException( nameof( writer ) );
             //operation-attributes-tag https://tools.ietf.org/html/rfc8010#section-3.5.1
             writer.Write( (byte)sectionTag );
             for (var i = 0; i < attributes.Count; i++)

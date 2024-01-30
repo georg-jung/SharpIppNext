@@ -122,7 +122,7 @@ public class IppProtocolTests
     }
 
     [TestMethod]
-    public void Write_String_ShouldBeWritten(  )
+    public void Write_String_ShouldBeWritten()
     {
         // Arrange
         var protocol = new IppProtocol();
@@ -163,6 +163,33 @@ public class IppProtocolTests
         await protocol.WriteIppRequestAsync( message, memoryStream );
         // Assert
         memoryStream.ToArray().Should().Equal( 0x01, 0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x7B );
+    }
+
+    [TestMethod]
+    public async Task WriteIppRequestAsync_MessageIsNull_ShouldThrowException()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        using MemoryStream memoryStream = new();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task> act = async () => await protocol.WriteIppRequestAsync( null, memoryStream );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public async Task WriteIppRequestAsync_StreamIsNull_ShouldThrowException()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task> act = async () => await protocol.WriteIppRequestAsync( new IppRequestMessage(), null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [TestMethod]
@@ -263,6 +290,19 @@ public class IppProtocolTests
         (await act.Should().NotThrowAsync()).Which.Should().BeEquivalentTo( message, x => x.Excluding( ( IMemberInfo x ) => x.Path == "Document.ReadTimeout" || x.Path == "Document.WriteTimeout" ) );
     }
 
+    [TestMethod]
+    public async Task ReadIppRequestAsync_Null_ShouldMatch()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task<IIppRequestMessage>> act = async () => await protocol.ReadIppRequestAsync( null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
     [TestMethod()]
     public async Task ReadIppRequestAsync_Document_ShouldMatch()
     {
@@ -283,7 +323,7 @@ public class IppProtocolTests
     }
 
     [TestMethod()]
-    public void WriteSection_NoAttributes_ShouldNotWriteAnything()
+    public void WriteSection_EmptyListOfAttributes_ShouldNotWriteAnything()
     {
         // Arrange
         var protocol = new IppProtocol();
@@ -293,6 +333,37 @@ public class IppProtocolTests
         protocol.WriteSection( SectionTag.OperationAttributesTag, new List<IppAttribute>(), binaryWriter );
         // Assert
         memoryStream.Length.Should().Be( 0 );
+    }
+
+    [TestMethod()]
+    public void WriteSection_ListIsNull_ShouldNotWriteAnything()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        using MemoryStream memoryStream = new();
+        using BinaryWriter binaryWriter = new( memoryStream );
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Action act = () => protocol.WriteSection( SectionTag.OperationAttributesTag, null, binaryWriter );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        act.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod()]
+    public void WriteSection_StreamIsNull_ShouldNotWriteAnything()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Action act = () => protocol.WriteSection( SectionTag.OperationAttributesTag, new List<IppAttribute>
+        {
+            new( Tag.Keyword, PrinterAttribute.IppVersionsSupported, new IppVersion(1,0).ToString() )
+        }, null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [TestMethod()]
@@ -459,7 +530,7 @@ public class IppProtocolTests
         // Assert
         await act.Should().ThrowAsync<IppResponseException>();
     }
-    
+
     [DataTestMethod]
     [DataRow( Tag.TextWithLanguage )]
     [DataRow( Tag.NameWithLanguage )]
@@ -781,5 +852,76 @@ public class IppProtocolTests
         Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, null );
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod()]
+    public void ReadIppResponseAsync_StreamIsNull_ShouldThrowException()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task<IIppResponseMessage>> act = async () => await protocol.ReadIppResponseAsync( null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [TestMethod()]
+    public void ReadValue_StreamIsNull_ShouldThrowException()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<object> act = () => protocol.ReadValue( null, Tag.Charset );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        act.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod()]
+    public void ReadAttribute_StreamIsNull_ShouldThrowException()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, null, null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        act.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod()]
+    public async Task WriteIppResponseAsync_MessageIsNull_ShouldThrowException()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        using MemoryStream requestStream = new();
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task> act = async () => await protocol.WriteIppResponseAsync( null, requestStream );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [TestMethod()]
+    public async Task WriteIppResponseAsync_StreamIsNull_ShouldThrowException()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        var message = new IppResponseMessage
+        {
+            Version = IppVersion.V1_1,
+            RequestId = 123
+        };
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task> act = async () => await protocol.WriteIppResponseAsync( message, null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+                              // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>();
     }
 }

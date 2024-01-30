@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using Moq;
+﻿using Moq;
+using SharpIpp.Exceptions;
 using SharpIpp.Models;
 using SharpIpp.Protocol;
 using SharpIpp.Protocol.Models;
@@ -11,6 +11,15 @@ namespace SharpIpp.Tests;
 [ExcludeFromCodeCoverage]
 public class SharpIppServerTests
 {
+    [TestMethod]
+    public void Constructor_Default_InstanceShouldBeCreated()
+    {
+        // Arrange & Act
+        SharpIppServer server = new();
+        // Assert
+        server.Should().NotBeNull();
+    }
+
     [TestMethod]
     public async Task ReceiveRawRequestAsync_Stream_ShouldBeWritten()
     {
@@ -86,8 +95,70 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             PrinterUri = new Uri( "ipp://127.0.0.1:631/" ),
             RequestingUserName = "test-user",
-            
             NewJobAttributes = new()
         } );
+    }
+
+    [TestMethod]
+    public async Task ReceiveRequestAsync_UnsupportedOperation_ShouldThrowError()
+    {
+        // Arrange
+        SharpIppServer server = new( Mock.Of<IIppProtocol>() );
+        IppRequestMessage ippRequestMessage = new()
+        {
+            IppOperation = IppOperation.Reserved1,
+            Version = IppVersion.V1_1,
+            RequestId = 123,
+        };
+        // Act
+        Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
+        // Assert
+        await act.Should().ThrowAsync<IppRequestException>();
+    }
+
+    [TestMethod]
+    public async Task ReceiveRequestAsync_StreamIsNull_ShouldThrowError()
+    {
+        // Arrange
+        SharpIppServer server = new( Mock.Of<IIppProtocol>() );
+        IppRequestMessage ippRequestMessage = new()
+        {
+            IppOperation = IppOperation.Reserved1,
+            Version = IppVersion.V1_1,
+            RequestId = 123,
+        };
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( stream: null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [TestMethod()]
+    public async Task ReceiveRawRequestAsync_Stream_ShouldReturnMessage()
+    {
+        // Arrange
+        Mock<IIppProtocol> protocol = new();
+        IppRequestMessage message = new();
+        protocol.Setup( x => x.ReadIppRequestAsync( It.IsAny<Stream>(), It.IsAny<CancellationToken>() ) ).ReturnsAsync( message );
+        SharpIppServer server = new( protocol.Object );
+        // Act
+        Func<Task<IIppRequestMessage>> act = async () => await server.ReceiveRawRequestAsync( Stream.Null );
+        // Assert
+        (await act.Should().NotThrowAsync()).Which.Should().Be( message );
+    }
+
+    [TestMethod()]
+    public async Task ReceiveRawRequestAsync_Null_ShouldThrowException()
+    {
+        // Arrange
+        SharpIppServer server = new( Mock.Of<IIppProtocol>() );
+        // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Func<Task<IIppRequestMessage>> act = async () => await server.ReceiveRawRequestAsync( null );
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        // Assert
+        await act.Should().ThrowAsync<ArgumentException>();
     }
 }
