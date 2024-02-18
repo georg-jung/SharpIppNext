@@ -103,8 +103,6 @@ namespace SharpIpp
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 ippResponse = await _ippProtocol.ReadIppResponseAsync(responseStream, cancellationToken).ConfigureAwait(false);
-                if (ippResponse == null)
-                    throw new Exception( "Unable to parse response" );
                 if (!ippResponse.IsSuccessfulStatusCode())
                     throw new IppResponseException($"Printer returned error code", ippResponse);
             }

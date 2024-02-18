@@ -39,7 +39,8 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new SendDocumentRequest
                 {
-                    DocumentAttributes = new DocumentAttributes()
+                    DocumentAttributes = new DocumentAttributes(),
+                    Document = src.Document
                 };
                 map.Map<IIppRequestMessage, IIppJobRequest>( src, dst );
                 var lastDocument = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.LastDocument )?.Value as bool?;

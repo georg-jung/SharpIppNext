@@ -45,6 +45,7 @@ namespace SharpIpp.Mapping.Profiles
 
                 var dst = new ValidateJobRequest
                 {
+                    Document = src.Document,
                     NewJobAttributes = new NewJobAttributes(),
                     DocumentAttributes = new DocumentAttributes()
                 };

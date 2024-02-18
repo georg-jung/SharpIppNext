@@ -23,7 +23,7 @@ namespace SharpIpp.Tests;
 [ExcludeFromCodeCoverage]
 public class SharpIppClientTests
 {
-    private Mock<HttpMessageHandler> GetMockOfHttpMessageHandler( HttpStatusCode statusCode = HttpStatusCode.OK )
+    private static Mock<HttpMessageHandler> GetMockOfHttpMessageHandler( HttpStatusCode statusCode = HttpStatusCode.OK )
     {
         Mock<HttpMessageHandler> handlerMock = new( MockBehavior.Strict );
         handlerMock
@@ -42,7 +42,7 @@ public class SharpIppClientTests
         return handlerMock;
     }
 
-    private Mock<IIppProtocol> GetMockOfIppProtocol()
+    private static Mock<IIppProtocol> GetMockOfIppProtocol()
     {
         Mock<IIppProtocol> protocol = new();
         protocol.Setup( x => x.ReadIppResponseAsync( It.IsAny<Stream>(), It.IsAny<CancellationToken>() ) ).ReturnsAsync( new IppResponseMessage
@@ -689,7 +689,7 @@ public class SharpIppClientTests
     }
 
     [TestMethod()]
-    public async Task CreateJobAsync_ValidResponseWithPlausibleState_ShouldThrowException()
+    public async Task CreateJobAsync_ResponseWithPlausibleHttpStateAndValidData_ShouldThrowException()
     {
         // Arrange
         HttpClient httpClient = new( GetMockOfHttpMessageHandler( HttpStatusCode.Unauthorized ).Object );
@@ -710,49 +710,11 @@ public class SharpIppClientTests
             RequestingUserName = "test-user"
         } );
         // Assert
-        await act.Should().ThrowAsync<Exceptions.IppResponseException>();
+        await act.Should().ThrowAsync<IppResponseException>();
     }
 
     [TestMethod()]
-    public async Task CreateJobAsync_EmptyResponseWithValidHttpState_ShouldThrowException()
-    {
-        // Arrange
-        Mock<IIppProtocol> protocol = new();
-        protocol.Setup( x => x.ReadIppResponseAsync( It.IsAny<Stream>(), It.IsAny<CancellationToken>() ) ).ReturnsAsync( (IIppResponseMessage?)null );
-        SharpIppClient client = new( new( GetMockOfHttpMessageHandler().Object ), protocol.Object );
-        // Act
-        Func<Task<Models.CreateJobResponse>> act = async () => await client.CreateJobAsync( new Models.CreateJobRequest
-        {
-            RequestId = 123,
-            Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
-        } );
-        // Assert
-        await act.Should().ThrowAsync<Exception>();
-    }
-
-    [TestMethod()]
-    public async Task CreateJobAsync_EmptyResponseWithPlausibleHttpState_ShouldThrowException()
-    {
-        // Arrange
-        Mock<IIppProtocol> protocol = new();
-        protocol.Setup( x => x.ReadIppResponseAsync( It.IsAny<Stream>(), It.IsAny<CancellationToken>() ) ).ReturnsAsync( (IIppResponseMessage?)null );
-        SharpIppClient client = new( new( GetMockOfHttpMessageHandler( HttpStatusCode.Unauthorized ).Object ), protocol.Object );
-        // Act
-        Func<Task<Models.CreateJobResponse>> act = async () => await client.CreateJobAsync( new Models.CreateJobRequest
-        {
-            RequestId = 123,
-            Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
-        } );
-        // Assert
-        await act.Should().ThrowAsync<HttpRequestException>();
-    }
-
-    [TestMethod()]
-    public async Task CreateJobAsync_ResponseWithInvalidIppCodeAndValidHttpState_ShouldThrowException()
+    public async Task CreateJobAsync_ResponseWithValidHttpStateAndInvalidIppCode_ShouldThrowException()
     {
         // Arrange
         Mock<IIppProtocol> protocol = new();
@@ -773,6 +735,44 @@ public class SharpIppClientTests
         } );
         // Assert
         await act.Should().ThrowAsync<IppResponseException>();
+    }
+
+    [TestMethod()]
+    public async Task CreateJobAsync_ResponseWithValidHttpStateAndInvalidData_ShouldThrowException()
+    {
+        // Arrange
+        Mock<IIppProtocol> protocol = new();
+        protocol.Setup( x => x.ReadIppResponseAsync( It.IsAny<Stream>(), It.IsAny<CancellationToken>() ) ).ThrowsAsync( new InvalidCastException() );
+        SharpIppClient client = new( new( GetMockOfHttpMessageHandler().Object ), protocol.Object );
+        // Act
+        Func<Task<CreateJobResponse>> act = async () => await client.CreateJobAsync( new CreateJobRequest
+        {
+            RequestId = 123,
+            Version = IppVersion.V1_1,
+            PrinterUri = new Uri( "http://127.0.0.1:631" ),
+            RequestingUserName = "test-user"
+        } );
+        // Assert
+        await act.Should().ThrowAsync<InvalidCastException>();
+    }
+
+    [TestMethod()]
+    public async Task CreateJobAsync_ResponseWithPlausibleHttpStateAndInvalidData_ShouldThrowException()
+    {
+        // Arrange
+        Mock<IIppProtocol> protocol = new();
+        protocol.Setup( x => x.ReadIppResponseAsync( It.IsAny<Stream>(), It.IsAny<CancellationToken>() ) ).ThrowsAsync( new InvalidCastException() );
+        SharpIppClient client = new( new( GetMockOfHttpMessageHandler( HttpStatusCode.Unauthorized ).Object ), protocol.Object );
+        // Act
+        Func<Task<CreateJobResponse>> act = async () => await client.CreateJobAsync( new CreateJobRequest
+        {
+            RequestId = 123,
+            Version = IppVersion.V1_1,
+            PrinterUri = new Uri( "http://127.0.0.1:631" ),
+            RequestingUserName = "test-user"
+        } );
+        // Assert
+        await act.Should().ThrowAsync<HttpRequestException>();
     }
 
     [TestMethod]

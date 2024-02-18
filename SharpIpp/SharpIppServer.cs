@@ -38,7 +38,7 @@ public partial class SharpIppServer
         Stream stream,
         CancellationToken cancellationToken = default )
     {
-        if (stream == null)
+        if (stream is null)
             throw new ArgumentNullException( nameof( stream ) );
         return _ippProtocol.ReadIppRequestAsync( stream, cancellationToken );
     }
@@ -56,7 +56,7 @@ public partial class SharpIppServer
         IIppRequestMessage request,
         CancellationToken cancellationToken = default )
     {
-        if (request == null)
+        if (request is null)
             throw new ArgumentNullException( nameof( request ) );
         IIppRequest mappedRequest = request.IppOperation switch
         {
@@ -79,16 +79,19 @@ public partial class SharpIppServer
             IppOperation.ValidateJob => Mapper.Map<IIppRequestMessage, ValidateJobRequest>( request ),
             _ => throw new IppRequestException( $"Unable to handle {request.IppOperation} operation", request, IppStatusCode.ClientErrorBadRequest )
         };
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult( mappedRequest );
     }
 
     public void ValidateRawRequest( IIppRequestMessage request )
     {
+        if (request is null)
+            throw new ArgumentNullException( nameof( request ) );
         if (request.RequestId <= 0)
             throw new IppRequestException( "Bad request-id value", request, IppStatusCode.ClientErrorBadRequest );
         if (!request.OperationAttributes.Any())
             throw new IppRequestException( "No Operation Attributes", request, IppStatusCode.ClientErrorBadRequest );
-        if (request.OperationAttributes.FirstOrDefault()?.Name != JobAttribute.AttributesCharset)
+        if (request.OperationAttributes.First().Name != JobAttribute.AttributesCharset)
             throw new IppRequestException( "attributes-charset MUST be the first attribute", request, IppStatusCode.ClientErrorBadRequest );
         if (request.OperationAttributes.Skip(1).FirstOrDefault()?.Name != JobAttribute.AttributesNaturalLanguage)
             throw new IppRequestException( "attributes-natural-language MUST be the second attribute", request, IppStatusCode.ClientErrorBadRequest );
@@ -103,6 +106,10 @@ public partial class SharpIppServer
         Stream stream,
         CancellationToken cancellationToken = default )
     {
+        if (ippResponseMessage is null)
+            throw new ArgumentNullException( nameof( ippResponseMessage ) );
+        if (stream is null)
+            throw new ArgumentNullException( nameof( stream ) );
         return _ippProtocol.WriteIppResponseAsync( ippResponseMessage, stream, cancellationToken );
     }
 
@@ -111,6 +118,8 @@ public partial class SharpIppServer
         Stream stream,
         CancellationToken cancellationToken = default ) where T : IIppResponseMessage
     {
+        if (ippResponsMessage is null)
+            throw new ArgumentNullException( nameof( ippResponsMessage ) );
         var ippResponse = Mapper.Map<IppResponseMessage>( ippResponsMessage );
         return _ippProtocol.WriteIppResponseAsync( ippResponse, stream, cancellationToken );
     }

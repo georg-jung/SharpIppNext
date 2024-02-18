@@ -38,9 +38,12 @@ namespace SharpIpp.Mapping.Profiles
                 var requestedAttributes = src.OperationAttributes.Where( x => x.Name == JobAttribute.RequestedAttributes ).Select( x => x.Value ).OfType<string>().ToArray();
                 if ( requestedAttributes.Any() )
                     dst.RequestedAttributes = requestedAttributes;
-                var knownOperationAttributeNames = new List<string> { JobAttribute.RequestedAttributes };
-                dst.AdditionalOperationAttributes = src.OperationAttributes.Where( x => !knownOperationAttributeNames.Contains( x.Name ) ).ToList();
-                dst.AdditionalJobAttributes = src.JobAttributes;
+                var additionalOperationAttributes = src.OperationAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
+                if (additionalOperationAttributes.Any())
+                    dst.AdditionalOperationAttributes = additionalOperationAttributes;
+                var additionalJobAttributes = src.JobAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
+                if (additionalJobAttributes.Any())
+                    dst.AdditionalJobAttributes = additionalJobAttributes;
                 return dst;
             } );
 

@@ -60,10 +60,10 @@ namespace SharpIpp.Mapping.Profiles
                 return dst;
             });
 
-            mapper.CreateMap<IppRequestMessage, CUPSGetPrintersRequest>( ( src, map ) =>
+            mapper.CreateMap<IIppRequestMessage, CUPSGetPrintersRequest>( ( src, map ) =>
             {
                 var dst = new CUPSGetPrintersRequest();
-                map.Map<IppRequestMessage, IIppPrinterRequest>( src, dst );
+                map.Map<IIppRequestMessage, IIppPrinterRequest>( src, dst );
                 dst.Limit = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.Limit )?.Value as int?;
                 dst.FirstPrinterName = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.FirstPrinterName )?.Value as string;
                 dst.PrinterId = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.PrinterId )?.Value as int?;
@@ -73,9 +73,12 @@ namespace SharpIpp.Mapping.Profiles
                 var requestedAttributes = src.OperationAttributes.Where( x => x.Name == JobAttribute.RequestedAttributes ).Select( x => x.Value ).OfType<string>().ToArray();
                 if ( requestedAttributes.Any() )
                     dst.RequestedAttributes = requestedAttributes;
-                var knownOperationAttributeNames = new List<string> { JobAttribute.Limit, JobAttribute.FirstPrinterName, JobAttribute.PrinterId, JobAttribute.PrinterLocation, JobAttribute.PrinterType, JobAttribute.PrinterTypeMask, JobAttribute.RequestedAttributes };
-                dst.AdditionalOperationAttributes = src.OperationAttributes.Where( x => !knownOperationAttributeNames.Contains( x.Name ) ).ToList();
-                dst.AdditionalJobAttributes = src.JobAttributes;
+                var additionalOperationAttributes = src.OperationAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
+                if (additionalOperationAttributes.Any())
+                    dst.AdditionalOperationAttributes = additionalOperationAttributes;
+                var additionalJobAttributes = src.JobAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
+                if (additionalJobAttributes.Any())
+                    dst.AdditionalJobAttributes = additionalJobAttributes;
                 return dst;
             } );
 
