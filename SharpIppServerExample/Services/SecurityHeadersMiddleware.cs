@@ -2,15 +2,8 @@
 
 namespace SharpIppServerExample.Services
 {
-    public class SecurityHeadersMiddleware
+    public class SecurityHeadersMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public SecurityHeadersMiddleware( RequestDelegate next )
-        {
-            _next = next;
-        }
-
         public async Task InvokeAsync( HttpContext httpContext )
         {
             httpContext.Response.Headers.TryAdd( "X-Frame-Options", "DENY" );
@@ -21,7 +14,7 @@ namespace SharpIppServerExample.Services
             httpContext.Response.Headers.TryAdd( "Cross-Origin-Opener-Policy", "unsafe-none" );
             httpContext.Response.Headers.TryAdd( "Cross-Origin-Embedder-Policy", "unsafe-none" );
             httpContext.Response.Headers.TryAdd( "Cross-Origin-Resource-Policy", "same-origin" );
-            await _next( httpContext );
+            await next( httpContext );
         }
     }
 }

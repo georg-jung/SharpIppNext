@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Options;
 using Quartz;
+using Quartz.Simpl;
 using SharpIppServerExample.Models;
 using SharpIppServerExample.Services;
 using System.Text;
@@ -16,7 +17,6 @@ builder.Services
     .AddCors()
     .AddQuartz( q =>
     {
-        q.UseMicrosoftDependencyInjectionJobFactory();
         var jobKey = new JobKey( "printerQueue" );
         q.AddJob<PrinterService>( opts => opts.WithIdentity( jobKey ) );
         q.AddTrigger( opts => opts

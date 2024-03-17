@@ -32,7 +32,7 @@ public class PrinterJob : IEquatable<PrinterJob>, IDisposable, IAsyncDisposable
     public int Id { get; }
     public JobState? State { get; private set; }
     public string? UserName { get; }
-    public List<IIppRequest> Requests { get; set; } = new List<IIppRequest>();
+    public List<IIppRequest> Requests { get; set; } = [];
     public DateTimeOffset CreatedDateTime { get; }
     public DateTimeOffset? CompletedDateTime { get; set; }
     public DateTimeOffset? ProcessingDateTime { get; set; }
