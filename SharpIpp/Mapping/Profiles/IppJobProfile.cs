@@ -93,7 +93,7 @@ namespace SharpIpp.Mapping.Profiles
                 if( src.JobStateMessage != null )
                     dic.Add( JobAttribute.JobStateMessage, new IppAttribute[] { new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.JobStateMessage, src.JobStateMessage ) } );
                 if(src.NumberOfInterveningJobs != null )
-                    dic.Add( JobAttribute.JobStateMessage, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.JobStateMessage, src.NumberOfInterveningJobs.Value ) } );
+                    dic.Add( JobAttribute.NumberOfInterveningJobs, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.NumberOfInterveningJobs, src.NumberOfInterveningJobs.Value ) } );
                 return dic;
             } );
         }

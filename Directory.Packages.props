@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="BinarySerializer" Version="8.6.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageVersion Include="Moq" Version="4.20.70" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.2.2" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.2.2" />
+    <PackageVersion Include="NUnit" Version="3.13.2" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.8.1" />
+    <PackageVersion Include="Snapper" Version="2.3.0" />
+  </ItemGroup>
+</Project>

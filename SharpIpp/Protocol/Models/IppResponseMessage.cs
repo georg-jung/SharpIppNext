@@ -9,7 +9,7 @@ namespace SharpIpp.Protocol.Models
 
         public IppStatusCode StatusCode { get; set; }
 
-        public int RequestId { get; set; }
+        public int RequestId { get; set; } = 1;
 
         public List<IppSection> Sections { get; } = new List<IppSection>();
 

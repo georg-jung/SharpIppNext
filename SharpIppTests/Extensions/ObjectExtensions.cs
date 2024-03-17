@@ -16,7 +16,7 @@ public static class ObjectExtensions
         using var assertionScope = new AssertionScope();
         assertion.Invoke( value );
         var failures = assertionScope.Discard();
-        if(!failures.Any())
+        if(failures.Length == 0)
             return true;
         foreach(var failure in failures )
             System.Diagnostics.Trace.WriteLine( failure );

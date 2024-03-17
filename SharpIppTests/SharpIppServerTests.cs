@@ -8,6 +8,7 @@ using SharpIpp.Protocol.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System;
+using SharpIppTests.Extensions;
 
 namespace SharpIpp.Tests;
 
@@ -906,5 +907,61 @@ public class SharpIppServerTests
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( Stream.Null );
         // Assert
         await act.Should().NotThrowAsync();
+    }
+
+    [TestMethod()]
+    public async Task SendResponseAsync_MesageIsNull_ShouldThrowException()
+    {
+        // Arrange
+        SharpIppServer server = new(Mock.Of<IIppProtocol>());
+        // Act
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8631 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match constraint type.
+        Func<Task> act = async () => await server.SendResponseAsync((IIppResponseMessage)null, Stream.Null);
+#pragma warning restore CS8631 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match constraint type.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        // Assert
+        await act.Should().ThrowAsync<Exception>();
+    }
+
+    [TestMethod()]
+    public async Task SendResponseAsync_CreateJobResponse_ShouldBeMapped()
+    {
+        // Arrange
+        Mock<IIppProtocol> ippProtocol = new();
+        SharpIppServer server = new( ippProtocol.Object );
+        var message = new CreateJobResponse
+        {
+            RequestId = 123,
+            Version = IppVersion.V1_1,
+            StatusCode = IppStatusCode.SuccessfulOk,
+            JobId = 234,
+            JobUri = "http://127.0.0.1:631/234",
+            JobState = JobState.Pending,
+            JobStateMessage = "custom state",
+            NumberOfInterveningJobs = 0
+        };
+        var rawMessage = new IppResponseMessage
+        {
+            RequestId = 123
+        };
+        var operationSection = new IppSection { Tag = SectionTag.OperationAttributesTag };
+        operationSection.Attributes.Add( new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ) );
+        operationSection.Attributes.Add( new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ) );
+        rawMessage.Sections.Add( operationSection );
+        var jobSection = new IppSection { Tag = SectionTag.JobAttributesTag };
+        jobSection.Attributes.Add(new IppAttribute(Tag.Uri, JobAttribute.JobUri, "http://127.0.0.1:631/234"));
+        jobSection.Attributes.Add(new IppAttribute(Tag.Integer, JobAttribute.JobId, 234));
+        jobSection.Attributes.Add(new IppAttribute(Tag.Enum, JobAttribute.JobState, (int)JobState.Pending));
+        jobSection.Attributes.Add(new IppAttribute(Tag.TextWithoutLanguage, JobAttribute.JobStateMessage, "custom state"));
+        jobSection.Attributes.Add(new IppAttribute(Tag.Integer, JobAttribute.TimeAtProcessing, 0));
+        rawMessage.Sections.Add(jobSection);
+        // Act
+        await server.SendResponseAsync( message, Stream.Null );
+        // Assert
+        ippProtocol.Verify( x => x.WriteIppResponseAsync(
+            It.Is<IppResponseMessage>( x => x.VerifyAssertionScope( _ => x.Should().BeEquivalentTo( rawMessage, "" ) ) ),
+            It.IsAny<Stream>(),
+            It.IsAny<CancellationToken>() ) );
     }
 }
