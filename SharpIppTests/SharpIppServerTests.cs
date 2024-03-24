@@ -36,14 +36,14 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -68,14 +68,14 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -100,13 +100,13 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -187,14 +187,14 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = -123,
         };
-        message.OperationAttributes.AddRange( new[]
-        {
+        message.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Action act = () => server.ValidateRawRequest( message );
         // Assert
@@ -233,13 +233,13 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        message.OperationAttributes.AddRange( new[]
-        {
+        message.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Action act = () => server.ValidateRawRequest( message );
         // Assert
@@ -259,13 +259,13 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        message.OperationAttributes.AddRange( new[]
-        {
+        message.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Action act = () => server.ValidateRawRequest( message );
         // Assert
@@ -285,10 +285,10 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        message.OperationAttributes.AddRange( new[]
-        {
+        message.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" )
-        } );
+        ] );
         // Act
         Action act = () => server.ValidateRawRequest( message );
         // Assert
@@ -308,14 +308,14 @@ public class SharpIppServerTests
             Version = new IppVersion( 0, 9 ),
             RequestId = 123,
         };
-        message.OperationAttributes.AddRange( new[]
-        {
+        message.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Action act = () => server.ValidateRawRequest( message );
         // Assert
@@ -335,13 +335,13 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        message.OperationAttributes.AddRange( new[]
-        {
+        message.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Action act = () => server.ValidateRawRequest( message );
         // Assert
@@ -374,14 +374,14 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        message.OperationAttributes.AddRange( new[]
-        {
+        message.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         // Act
         Action act = () => server.ValidateRawRequest( message );
         // Assert
@@ -399,14 +399,14 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 456 )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -431,13 +431,13 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -461,13 +461,13 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -491,14 +491,14 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 234 )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -523,13 +523,13 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -555,13 +555,13 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             Document = memoryStream
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -589,14 +589,14 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" ),
             new IppAttribute( Tag.Uri, JobAttribute.DocumentUri, uri.AbsoluteUri )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -623,13 +623,13 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -653,14 +653,14 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 234 )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -685,14 +685,14 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 456 )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -717,13 +717,13 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -749,15 +749,15 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             Document = memoryStream
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 456 ),
             new IppAttribute( Tag.Boolean, JobAttribute.LastDocument, false )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -785,8 +785,8 @@ public class SharpIppServerTests
             RequestId = 123,
             Version = IppVersion.V1_1
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
@@ -794,7 +794,7 @@ public class SharpIppServerTests
             new IppAttribute( Tag.Uri, JobAttribute.DocumentUri, uri.AbsoluteUri ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 456 ),
             new IppAttribute( Tag.Boolean, JobAttribute.LastDocument, false )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -823,13 +823,13 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             Document = memoryStream
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
-        } );
+        ] );
         // Act
         Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync( ippRequestMessage );
         // Assert
@@ -893,14 +893,14 @@ public class SharpIppServerTests
             Version = IppVersion.V1_1,
             RequestId = 123,
         };
-        ippRequestMessage.OperationAttributes.AddRange( new[]
-        {
+        ippRequestMessage.OperationAttributes.AddRange(
+        [
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
             new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
             new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
-        } );
+        ] );
         ippProtocol.Setup( x => x.ReadIppRequestAsync( It.IsAny<Stream>(), It.IsAny<CancellationToken>() ) ).ReturnsAsync( ippRequestMessage );
         SharpIppServer server = new( ippProtocol.Object );
         // Act

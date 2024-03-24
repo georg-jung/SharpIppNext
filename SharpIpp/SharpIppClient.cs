@@ -15,179 +15,178 @@ using SharpIpp.Protocol;
 using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
-namespace SharpIpp
+namespace SharpIpp;
+
+public partial class SharpIppClient : ISharpIppClient
 {
-    public partial class SharpIppClient : ISharpIppClient
+    private static readonly Lazy<IMapper> MapperSingleton;
+
+    private readonly bool _disposeHttpClient;
+    private readonly HttpClient _httpClient;
+    private readonly IIppProtocol _ippProtocol;
+
+    static SharpIppClient()
     {
-        private static readonly Lazy<IMapper> MapperSingleton;
+        MapperSingleton = new Lazy<IMapper>(MapperFactory);
+    }
 
-        private readonly bool _disposeHttpClient;
-        private readonly HttpClient _httpClient;
-        private readonly IIppProtocol _ippProtocol;
+    public SharpIppClient() : this(new HttpClient(), new IppProtocol(), true)
+    {
+    }
 
-        static SharpIppClient()
+    public SharpIppClient(HttpClient httpClient) : this(httpClient, new IppProtocol(), false )
+    {
+    }
+
+    public SharpIppClient(HttpClient httpClient, IIppProtocol ippProtocol) : this( httpClient, ippProtocol, false )
+    {
+    }
+
+    internal SharpIppClient(HttpClient httpClient, IIppProtocol ippProtocol, bool disposeHttpClient)
+    {
+        _httpClient = httpClient;
+        _ippProtocol = ippProtocol;
+        _disposeHttpClient = disposeHttpClient;
+    }
+
+    private IMapper Mapper => MapperSingleton.Value;
+
+    /// <summary>
+    ///     Status codes of <see cref="HttpResponseMessage" /> that are not successful,
+    ///     but response still contains valid ipp-data in the body that can be parsed for better error description
+    ///     Seems like they are printer specific
+    /// </summary>
+    private static readonly HttpStatusCode[] _plausibleHttpStatusCodes = [
+        HttpStatusCode.Continue,
+        HttpStatusCode.Unauthorized,
+        HttpStatusCode.Forbidden,
+        HttpStatusCode.UpgradeRequired,
+    ];
+
+    /// <inheritdoc />
+    public async Task<IIppResponseMessage> SendAsync(
+        Uri printer,
+        IIppRequestMessage ippRequest,
+        CancellationToken cancellationToken = default)
+    {
+        var httpRequest = GetHttpRequestMessage( printer );
+
+        HttpResponseMessage? response;
+
+        using (Stream stream = new MemoryStream())
         {
-            MapperSingleton = new Lazy<IMapper>(MapperFactory);
+            await _ippProtocol.WriteIppRequestAsync(ippRequest, stream, cancellationToken).ConfigureAwait(false);
+            stream.Seek(0, SeekOrigin.Begin);
+            httpRequest.Content = new StreamContent(stream) { Headers = { { "Content-Type", "application/ipp" } } };
+            response = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
         }
 
-        public SharpIppClient() : this(new HttpClient(), new IppProtocol(), true)
+        Exception? httpException = null;
+
+        try
         {
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            if (!_plausibleHttpStatusCodes.Contains(response.StatusCode))
+            {
+                throw;
+            }
+
+            httpException = ex;
         }
 
-        public SharpIppClient(HttpClient httpClient) : this(httpClient, new IppProtocol(), false )
+        IIppResponseMessage? ippResponse;
+
+        try
         {
+            using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            ippResponse = await _ippProtocol.ReadIppResponseAsync(responseStream, cancellationToken).ConfigureAwait(false);
+            if (!ippResponse.IsSuccessfulStatusCode())
+                throw new IppResponseException($"Printer returned error code", ippResponse);
         }
-
-        public SharpIppClient(HttpClient httpClient, IIppProtocol ippProtocol) : this( httpClient, ippProtocol, false )
+        catch
         {
-        }
-
-        internal SharpIppClient(HttpClient httpClient, IIppProtocol ippProtocol, bool disposeHttpClient)
-        {
-            _httpClient = httpClient;
-            _ippProtocol = ippProtocol;
-            _disposeHttpClient = disposeHttpClient;
-        }
-
-        private IMapper Mapper => MapperSingleton.Value;
-
-        /// <summary>
-        ///     Status codes of <see cref="HttpResponseMessage" /> that are not successful,
-        ///     but response still contains valid ipp-data in the body that can be parsed for better error description
-        ///     Seems like they are printer specific
-        /// </summary>
-        private static readonly HttpStatusCode[] _plausibleHttpStatusCodes = [
-            HttpStatusCode.Continue,
-            HttpStatusCode.Unauthorized,
-            HttpStatusCode.Forbidden,
-            HttpStatusCode.UpgradeRequired,
-        ];
-
-        /// <inheritdoc />
-        public async Task<IIppResponseMessage> SendAsync(
-            Uri printer,
-            IIppRequestMessage ippRequest,
-            CancellationToken cancellationToken = default)
-        {
-            var httpRequest = GetHttpRequestMessage( printer );
-
-            HttpResponseMessage? response;
-
-            using (Stream stream = new MemoryStream())
-            {
-                await _ippProtocol.WriteIppRequestAsync(ippRequest, stream, cancellationToken).ConfigureAwait(false);
-                stream.Seek(0, SeekOrigin.Begin);
-                httpRequest.Content = new StreamContent(stream) { Headers = { { "Content-Type", "application/ipp" } } };
-                response = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-
-            Exception? httpException = null;
-
-            try
-            {
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException ex)
-            {
-                if (!_plausibleHttpStatusCodes.Contains(response.StatusCode))
-                {
-                    throw;
-                }
-
-                httpException = ex;
-            }
-
-            IIppResponseMessage? ippResponse;
-
-            try
-            {
-                using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                ippResponse = await _ippProtocol.ReadIppResponseAsync(responseStream, cancellationToken).ConfigureAwait(false);
-                if (!ippResponse.IsSuccessfulStatusCode())
-                    throw new IppResponseException($"Printer returned error code", ippResponse);
-            }
-            catch
-            {
-                if (httpException == null)
-                {
-                    throw;
-                }
-
-                throw httpException;
-            }
-
             if (httpException == null)
             {
-                return ippResponse;
+                throw;
             }
 
-            throw new IppResponseException(httpException.Message, httpException, ippResponse);
+            throw httpException;
         }
 
-        public void Dispose()
+        if (httpException == null)
         {
-            if (_disposeHttpClient)
-            {
-                _httpClient.Dispose();
-            }
+            return ippResponse;
         }
 
-        protected async Task<TOut> SendAsync<TIn, TOut>(
-            TIn data,
-            Func<TIn, IIppRequestMessage> constructRequestFunc,
-            Func<IIppResponseMessage, TOut> constructResponseFunc,
-            CancellationToken cancellationToken)
-            where TIn : IIppRequest
-            where TOut : IIppResponseMessage
+        throw new IppResponseException(httpException.Message, httpException, ippResponse);
+    }
+
+    public void Dispose()
+    {
+        if (_disposeHttpClient)
         {
-            var ippRequest = constructRequestFunc(data);
-            var ippResponse = await SendAsync(data.PrinterUri, ippRequest, cancellationToken).ConfigureAwait(false);
-            var res = constructResponseFunc(ippResponse);
-            return res;
+            _httpClient.Dispose();
         }
+    }
 
-        private IppRequestMessage ConstructIppRequest<T>(T request)
+    protected async Task<TOut> SendAsync<TIn, TOut>(
+        TIn data,
+        Func<TIn, IIppRequestMessage> constructRequestFunc,
+        Func<IIppResponseMessage, TOut> constructResponseFunc,
+        CancellationToken cancellationToken)
+        where TIn : IIppRequest
+        where TOut : IIppResponseMessage
+    {
+        var ippRequest = constructRequestFunc(data);
+        var ippResponse = await SendAsync(data.PrinterUri, ippRequest, cancellationToken).ConfigureAwait(false);
+        var res = constructResponseFunc(ippResponse);
+        return res;
+    }
+
+    private IppRequestMessage ConstructIppRequest<T>(T request)
+    {
+        if (request == null)
         {
-            if (request == null)
-            {
-                throw new ArgumentException($"{nameof(request)}");
-            }
-
-            var ippRequest = Mapper.Map<T, IppRequestMessage>(request);
-            return ippRequest;
+            throw new ArgumentException($"{nameof(request)}");
         }
 
-        public T Construct<T>(IIppResponseMessage ippResponse) where T : IIppResponseMessage
+        var ippRequest = Mapper.Map<T, IppRequestMessage>(request);
+        return ippRequest;
+    }
+
+    public T Construct<T>(IIppResponseMessage ippResponse) where T : IIppResponseMessage
+    {
+        try
         {
-            try
-            {
-                var r = Mapper.Map<T>(ippResponse);
-                return r;
-            }
-            catch (Exception ex)
-            {
-                throw new IppResponseException("Ipp attributes mapping exception", ex, ippResponse);
-            }
+            var r = Mapper.Map<T>(ippResponse);
+            return r;
         }
-
-        private static HttpRequestMessage GetHttpRequestMessage( Uri printer )
+        catch (Exception ex)
         {
-            var isSecured = printer.Scheme.Equals( "https", StringComparison.OrdinalIgnoreCase )
-                || printer.Scheme.Equals( "ipps", StringComparison.OrdinalIgnoreCase );
-            var uriBuilder = new UriBuilder( printer )
-            {
-                Scheme = isSecured ? "https" : "http",
-                Port = printer.Port == -1 ? 631 : printer.Port
-            };
-            return new HttpRequestMessage( HttpMethod.Post, uriBuilder.Uri );
+            throw new IppResponseException("Ipp attributes mapping exception", ex, ippResponse);
         }
+    }
 
-        private static IMapper MapperFactory()
+    private static HttpRequestMessage GetHttpRequestMessage( Uri printer )
+    {
+        var isSecured = printer.Scheme.Equals( "https", StringComparison.OrdinalIgnoreCase )
+            || printer.Scheme.Equals( "ipps", StringComparison.OrdinalIgnoreCase );
+        var uriBuilder = new UriBuilder( printer )
         {
-            var mapper = new SimpleMapper();
-            var assembly = Assembly.GetAssembly(typeof(TypesProfile));
-            mapper.FillFromAssembly(assembly!);
-            return mapper;
-        }
+            Scheme = isSecured ? "https" : "http",
+            Port = printer.Port == -1 ? 631 : printer.Port
+        };
+        return new HttpRequestMessage( HttpMethod.Post, uriBuilder.Uri );
+    }
+
+    private static IMapper MapperFactory()
+    {
+        var mapper = new SimpleMapper();
+        var assembly = Assembly.GetAssembly(typeof(TypesProfile));
+        mapper.FillFromAssembly(assembly!);
+        return mapper;
     }
 }
