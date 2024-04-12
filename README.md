@@ -23,7 +23,8 @@ dotnet add package SharpIppNext
 ## Getting started
 
 - Check [Wiki](https://github.com/danielklecha/SharpIppNext/wiki). 
-- Solution contains examples of the IPP client and the IPP server.
+- Example of the IPP client is included in solution
+- Example of the IPP server is avaliable in [SharpIppNextServer repository](https://github.com/danielklecha/SharpIppNextServer).
 
 
 ## License
