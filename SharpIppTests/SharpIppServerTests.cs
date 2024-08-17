@@ -90,6 +90,55 @@ public class SharpIppServerTests
     }
 
     [TestMethod]
+    public async Task ReceiveRequestAsync_JobAttributes_ShouldBeMapped()
+    {
+		// Arrange
+		SharpIppServer server = new(Mock.Of<IIppProtocol>());
+		IppRequestMessage ippRequestMessage = new()
+		{
+			IppOperation = IppOperation.CreateJob,
+			Version = IppVersion.V1_1,
+			RequestId = 123,
+		};
+		ippRequestMessage.OperationAttributes.AddRange(
+		[
+			new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
+			new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
+			new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ),
+			new IppAttribute( Tag.Integer, JobAttribute.JobId, 123 ),
+			new IppAttribute( Tag.TextWithoutLanguage, JobAttribute.RequestingUserName, "test-user" )
+		]);
+		ippRequestMessage.JobAttributes.AddRange(
+		[
+            new IppAttribute( Tag.Integer, JobAttribute.JobPriority, 99 ),
+            new IppAttribute( Tag.Keyword, JobAttribute.JobHoldUntil, "day-time"),
+            new IppAttribute( Tag.Integer, JobAttribute.Copies, 2 ),
+            new IppAttribute( Tag.Keyword, JobAttribute.Finishings, 4),
+			new IppAttribute( Tag.Keyword, JobAttribute.Sides, "two-sided-long-edge"),
+            new IppAttribute( Tag.Keyword, JobAttribute.OrientationRequested, 4)
+		]);
+
+		// Act
+		Func<Task<IIppRequest>> act = async () => await server.ReceiveRequestAsync(ippRequestMessage);
+		// Assert
+		(await act.Should().NotThrowAsync()).Which.Should().BeEquivalentTo(new CreateJobRequest
+		{
+			RequestId = 123,
+			Version = IppVersion.V1_1,
+			PrinterUri = new Uri("ipp://127.0.0.1:631/"),
+			RequestingUserName = "test-user",
+			NewJobAttributes = new() { 
+                JobPriority = 99,
+                JobHoldUntil = JobHoldUntil.DayTime,
+                Copies = 2,
+                Finishings = Finishings.Staple,
+                Sides = Sides.TwoSidedLongEdge,
+                OrientationRequested = Orientation.Landscape
+            }
+		});
+	}
+
+    [TestMethod]
     public async Task ReceiveRequestAsync_GetCUPSPrinters_ShouldBeMapped()
     {
         // Arrange

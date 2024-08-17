@@ -109,14 +109,14 @@ namespace SharpIpp.Mapping.Profiles
                 dst.JobName = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.JobName )?.Value as string;
                 dst.IppAttributeFidelity = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.IppAttributeFidelity )?.Value as bool?;
                 dst.JobPriority = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.JobPriority )?.Value as int?;
-                dst.JobHoldUntil = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.JobHoldUntil )?.Value is int jobHoldUntil && Enum.IsDefined( typeof( JobHoldUntil ), jobHoldUntil ) ? (JobHoldUntil)jobHoldUntil : null; 
+                dst.JobHoldUntil = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.JobHoldUntil )?.Value is string jobHoldUntilValue && map.Map<JobHoldUntil>(jobHoldUntilValue) is JobHoldUntil jobHoldUntil && jobHoldUntil != JobHoldUntil.Unsupported ? jobHoldUntil : null; 
                 dst.MultipleDocumentHandling = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.MultipleDocumentHandling )?.Value is int multipleDocumentHandling && Enum.IsDefined( typeof( MultipleDocumentHandling ), multipleDocumentHandling ) ? (MultipleDocumentHandling)multipleDocumentHandling : null;
                 dst.Copies = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.Copies )?.Value as int?;
                 dst.Finishings = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.Finishings )?.Value is int finishings && Enum.IsDefined( typeof( Finishings ), finishings ) ? (Finishings)finishings : null;
                 var pageRanges = src.JobAttributes.Where( x => x.Name == JobAttribute.PageRanges ).Select( x => x.Value ).OfType<Range>().ToArray();
                 dst.PageRanges = pageRanges.Any() ? pageRanges : null;
-                dst.Sides = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.Sides )?.Value is int sides && Enum.IsDefined( typeof( Sides ), sides ) ? (Sides)sides : null;
-                dst.NumberUp = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.NumberUp )?.Value as int?;
+				dst.Sides = src.JobAttributes.FirstOrDefault(x => x.Name == JobAttribute.Sides)?.Value is string sidesValue && map.Map<Sides>(sidesValue) is Sides sides && sides != Sides.Unsupported ? sides : null;
+				dst.NumberUp = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.NumberUp )?.Value as int?;
                 dst.OrientationRequested = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.OrientationRequested )?.Value is int orientationRequested && Enum.IsDefined( typeof( Orientation ), orientationRequested ) ? (Orientation)orientationRequested : null;
                 dst.Media = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.Media )?.Value as string;
                 dst.PrinterResolution = src.JobAttributes.FirstOrDefault( x => x.Name == JobAttribute.PrinterResolution )?.Value as Resolution?;
