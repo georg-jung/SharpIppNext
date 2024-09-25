@@ -113,12 +113,27 @@ namespace SharpIpp.Mapping.Profiles
                     dic.Add( JobAttribute.Compression, new IppAttribute[] { new IppAttribute( Tag.Keyword, JobAttribute.Compression, map.Map<string>( src.Compression ) ) } );
                 if ( src.Copies != null )
                     dic.Add( JobAttribute.Copies, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.Copies, src.Copies.Value ) } );
-                if ( src.DateTimeAtCompleted != null )
-                    dic.Add( JobAttribute.DateTimeAtCompleted, new IppAttribute[] { new IppAttribute( Tag.DateTime, JobAttribute.DateTimeAtCompleted, src.DateTimeAtCompleted.Value ) } );
-                if ( src.DateTimeAtCreation != null )
-                    dic.Add( JobAttribute.DateTimeAtCreation, new IppAttribute[] { new IppAttribute( Tag.DateTime, JobAttribute.DateTimeAtCreation, src.DateTimeAtCreation.Value ) } );
-                if ( src.DateTimeAtProcessing != null )
-                    dic.Add( JobAttribute.DateTimeAtProcessing, new IppAttribute[] { new IppAttribute( Tag.DateTime, JobAttribute.DateTimeAtProcessing, src.DateTimeAtProcessing.Value ) } );
+                if (src.DateTimeAtCompleted != null)
+                {
+                    if (src.DateTimeAtCompleted.Value > DateTime.MinValue)
+                        dic.Add(JobAttribute.DateTimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.DateTime, JobAttribute.DateTimeAtCompleted, src.DateTimeAtCompleted.Value) });
+                    else
+                        dic.Add(JobAttribute.DateTimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.DateTimeAtCompleted, NoValue.Instance) });
+                }
+                if (src.DateTimeAtCreation != null)
+                {
+                    if (src.DateTimeAtCreation.Value > DateTime.MinValue)
+                        dic.Add(JobAttribute.DateTimeAtCreation, new IppAttribute[] { new IppAttribute(Tag.DateTime, JobAttribute.DateTimeAtCreation, src.DateTimeAtCreation.Value) });
+                    else
+                        dic.Add(JobAttribute.DateTimeAtCreation, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.DateTimeAtCreation, NoValue.Instance) });
+                }
+                if (src.DateTimeAtProcessing != null)
+                {
+                    if (src.DateTimeAtProcessing.Value > DateTime.MinValue)
+                        dic.Add(JobAttribute.DateTimeAtProcessing, new IppAttribute[] { new IppAttribute(Tag.DateTime, JobAttribute.DateTimeAtProcessing, src.DateTimeAtProcessing.Value) });
+                    else
+                        dic.Add(JobAttribute.DateTimeAtProcessing, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.DateTimeAtProcessing, NoValue.Instance) });
+                }
                 if ( src.DocumentFormat != null )
                     dic.Add( JobAttribute.DocumentFormat, new IppAttribute[] { new IppAttribute( Tag.MimeMediaType, JobAttribute.DocumentFormat, src.DocumentFormat ) } );
                 if ( src.DocumentName != null )
@@ -173,12 +188,27 @@ namespace SharpIpp.Mapping.Profiles
                     dic.Add( JobAttribute.PrintQuality, new IppAttribute[] { new IppAttribute( Tag.Enum, JobAttribute.PrintQuality, (int)src.PrintQuality.Value ) } );
                 if ( src.Sides != null )
                     dic.Add( JobAttribute.Sides, new IppAttribute[] { new IppAttribute( Tag.Keyword, JobAttribute.Sides, map.Map<string>( src.Sides ) ) } );
-                if ( src.TimeAtCompleted != null )
-                    dic.Add( JobAttribute.TimeAtCompleted, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.TimeAtCompleted, src.TimeAtCompleted.Value ) } );
-                if ( src.TimeAtCreation != null )
-                    dic.Add( JobAttribute.TimeAtCreation, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.TimeAtCreation, src.TimeAtCreation.Value ) } );
-                if ( src.TimeAtProcessing != null )
-                    dic.Add( JobAttribute.TimeAtProcessing, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.TimeAtProcessing, src.TimeAtProcessing.Value ) } );
+                if (src.TimeAtCompleted != null)
+                {
+                    if (src.TimeAtCompleted.Value >= 0)
+                        dic.Add(JobAttribute.TimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.Integer, JobAttribute.TimeAtCompleted, src.TimeAtCompleted.Value) });
+                    else
+                        dic.Add(JobAttribute.TimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.TimeAtCompleted, NoValue.Instance) });
+                }
+                if (src.TimeAtCreation != null)
+                {
+                    if (src.TimeAtCreation.Value >= 0)
+                        dic.Add(JobAttribute.TimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.Integer, JobAttribute.TimeAtCreation, src.TimeAtCreation.Value) });
+                    else
+                        dic.Add(JobAttribute.TimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.TimeAtCreation, NoValue.Instance) });
+                }
+                if (src.TimeAtProcessing != null)
+                {
+                    if (src.TimeAtProcessing.Value >= 0)
+                        dic.Add(JobAttribute.TimeAtProcessing, new IppAttribute[] { new IppAttribute(Tag.Integer, JobAttribute.TimeAtProcessing, src.TimeAtProcessing.Value) });
+                    else
+                        dic.Add(JobAttribute.TimeAtProcessing, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.TimeAtProcessing, NoValue.Instance) });
+                }
                 return dic;
             } );
         }
