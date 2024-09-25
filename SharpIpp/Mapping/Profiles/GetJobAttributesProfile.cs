@@ -198,9 +198,9 @@ namespace SharpIpp.Mapping.Profiles
                 if (src.TimeAtCreation != null)
                 {
                     if (src.TimeAtCreation.Value >= 0)
-                        dic.Add(JobAttribute.TimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.Integer, JobAttribute.TimeAtCreation, src.TimeAtCreation.Value) });
+                        dic.Add(JobAttribute.TimeAtCreation, new IppAttribute[] { new IppAttribute(Tag.Integer, JobAttribute.TimeAtCreation, src.TimeAtCreation.Value) });
                     else
-                        dic.Add(JobAttribute.TimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.TimeAtCreation, NoValue.Instance) });
+                        dic.Add(JobAttribute.TimeAtCreation, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.TimeAtCreation, NoValue.Instance) });
                 }
                 if (src.TimeAtProcessing != null)
                 {
