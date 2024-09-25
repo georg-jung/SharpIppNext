@@ -115,21 +115,21 @@ namespace SharpIpp.Mapping.Profiles
                     dic.Add( JobAttribute.Copies, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.Copies, src.Copies.Value ) } );
                 if (src.DateTimeAtCompleted != null)
                 {
-                    if (src.DateTimeAtCompleted.Value > DateTime.MinValue)
+                    if (src.DateTimeAtCompleted.Value > DateTimeOffset.MinValue)
                         dic.Add(JobAttribute.DateTimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.DateTime, JobAttribute.DateTimeAtCompleted, src.DateTimeAtCompleted.Value) });
                     else
                         dic.Add(JobAttribute.DateTimeAtCompleted, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.DateTimeAtCompleted, NoValue.Instance) });
                 }
                 if (src.DateTimeAtCreation != null)
                 {
-                    if (src.DateTimeAtCreation.Value > DateTime.MinValue)
+                    if (src.DateTimeAtCreation.Value > DateTimeOffset.MinValue)
                         dic.Add(JobAttribute.DateTimeAtCreation, new IppAttribute[] { new IppAttribute(Tag.DateTime, JobAttribute.DateTimeAtCreation, src.DateTimeAtCreation.Value) });
                     else
                         dic.Add(JobAttribute.DateTimeAtCreation, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.DateTimeAtCreation, NoValue.Instance) });
                 }
                 if (src.DateTimeAtProcessing != null)
                 {
-                    if (src.DateTimeAtProcessing.Value > DateTime.MinValue)
+                    if (src.DateTimeAtProcessing.Value > DateTimeOffset.MinValue)
                         dic.Add(JobAttribute.DateTimeAtProcessing, new IppAttribute[] { new IppAttribute(Tag.DateTime, JobAttribute.DateTimeAtProcessing, src.DateTimeAtProcessing.Value) });
                     else
                         dic.Add(JobAttribute.DateTimeAtProcessing, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.DateTimeAtProcessing, NoValue.Instance) });
