@@ -11,33 +11,45 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+
     - name: Replace Version in csproj files
       run: |
         tag=$(echo "${{ github.ref_name }}" | sed 's/^v//')
         find . -type f -name "*.csproj" -exec sed -i "s/<Version>.*<\/Version>/<Version>${tag}<\/Version>/g" {} \;
+
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
+
+    - name: Build (Standard)
       run: dotnet build --configuration Release --no-restore
+
     - name: Test
       run: dotnet test --configuration Release --no-build
+
     - name: Pack (Standard)
       run: dotnet pack SharpIpp/SharpIpp.csproj --configuration Release --no-build
+
     - name: Create Strong Name Assembly Key File
       run: |
         echo "${{ secrets.STRONG_NAME_KEY }}" | base64 --decode > SharpIppNext.snk
+
+    - name: Build (Strong-Named)
+      run: dotnet build SharpIpp/SharpIpp.csproj --configuration Release --no-restore /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=SharpIppNext.snk
+
     - name: Pack (Strong-Named)
-      run: dotnet pack SharpIpp/SharpIpp.csproj --configuration Release --no-build /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=SharpIppNext.snk /p:PackageId=SharpIppNext.StrongName
+      run: dotnet pack SharpIpp/SharpIpp.csproj --configuration Release --no-build /p:PackageId=SharpIppNext.StrongName
+
     - name: Publish to NuGet
       run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGETAPIKEY }}
+
     - name: Create GitHub Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         tag=${{ github.ref_name }}
         gh release create "$tag" --generate-notes
-  
