@@ -25,8 +25,13 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --configuration Release --no-build
-    - name: Pack
+    - name: Pack (Standard)
       run: dotnet pack SharpIpp/SharpIpp.csproj --configuration Release --no-build
+    - name: Create Strong Name Assembly Key File
+      run: |
+        echo "${{ secrets.STRONG_NAME_KEY }}" | base64 --decode > SharpIppNext.snk
+    - name: Pack (Strong-Named)
+      run: dotnet pack SharpIpp/SharpIpp.csproj --configuration Release --no-build /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=SharpIppNext.snk /p:PackageId=SharpIppNext.StrongName
     - name: Publish to NuGet
       run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGETAPIKEY }}
     - name: Create GitHub Release
