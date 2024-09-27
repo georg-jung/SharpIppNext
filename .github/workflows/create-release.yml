@@ -39,7 +39,7 @@ jobs:
         echo "${{ secrets.STRONG_NAME_KEY }}" | base64 --decode > SharpIppNext.snk
 
     - name: Build (Strong-Named)
-      run: dotnet build SharpIpp/SharpIpp.csproj --configuration Release --no-restore /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=SharpIppNext.snk
+      run: dotnet build SharpIpp/SharpIpp.csproj --configuration Release --no-restore /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=./SharpIppNext.snk
 
     - name: Pack (Strong-Named)
       run: dotnet pack SharpIpp/SharpIpp.csproj --configuration Release --no-build /p:PackageId=SharpIppNext.StrongName
