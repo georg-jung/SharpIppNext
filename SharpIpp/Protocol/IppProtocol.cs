@@ -225,14 +225,10 @@ namespace SharpIpp.Protocol
                 Tag.DateTime => ReadDateTimeOffset(stream),
                 Tag.Resolution => ReadResolution(stream),
                 Tag.RangeOfInteger => ReadRange(stream),
-                Tag.BegCollection =>
-                    //TODO: collection https://tools.ietf.org/html/rfc8010#section-3.1.6
-                    ReadString(stream),
+                Tag.BegCollection => ReadNoValue(stream),
                 Tag.TextWithLanguage => ReadStringWithLanguage(stream),
                 Tag.NameWithLanguage => ReadStringWithLanguage(stream),
-                Tag.EndCollection =>
-                    //TODO: collection https://tools.ietf.org/html/rfc8010#section-3.1.6
-                    ReadNoValue(stream),
+                Tag.EndCollection => ReadNoValue(stream),
                 Tag.TextWithoutLanguage => ReadString(stream),
                 Tag.NameWithoutLanguage => ReadString(stream),
                 Tag.Keyword => ReadString(stream),
@@ -296,14 +292,36 @@ namespace SharpIpp.Protocol
                 throw new ArgumentNullException( nameof( stream ) );
             var len = stream.ReadInt16BigEndian();
             var name = Encoding.ASCII.GetString(stream.ReadBytes(len));
-            var normalizedName = string.IsNullOrEmpty(name) && prevAttribute != null ? prevAttribute.Name : name;
-            if (string.IsNullOrEmpty(normalizedName))
-            {
-                throw new ArgumentException("0 length attribute name found not in a 1setOf");
-            }
+            var normalizedName = GetNormalizedName(tag, name, prevAttribute);
             var value = ReadValue( stream, tag );
             var attribute = new IppAttribute(tag, normalizedName, value);
             return attribute;
+        }
+
+        private string GetNormalizedName(Tag tag, string name, IppAttribute? prevAttribute)
+        {
+            if (!string.IsNullOrEmpty(name))
+                return name;
+            switch (tag)
+            {
+                case Tag.BegCollection:
+                case Tag.MemberAttrName:
+                case Tag.EndCollection:
+                    return string.Empty;
+            }
+            if(prevAttribute != null)
+            {
+                switch (prevAttribute.Tag)
+                {
+                    case Tag.BegCollection:
+                    case Tag.MemberAttrName:
+                    case Tag.EndCollection:
+                        return string.Empty;
+                }
+                if (!string.IsNullOrEmpty(prevAttribute.Name))
+                    return prevAttribute.Name;
+            }
+            throw new ArgumentException("0 length attribute name found not in a 1setOf");
         }
 
         private async Task<IIppRequestMessage> ReadIppRequestAsync( BinaryReader reader, CancellationToken cancellationToken = default )

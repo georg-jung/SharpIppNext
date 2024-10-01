@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
 namespace SharpIpp.Mapping.Profiles
@@ -49,24 +50,19 @@ namespace SharpIpp.Mapping.Profiles
             ConfigureKeyword( mapper, UriScheme.Unsupported );
             ConfigureKeyword( mapper, UriAuthentication.Unsupported );
             ConfigureKeyword( mapper, UriSecurity.Unsupported );
-        }
-
-        private string ConvertDashToCamelCase( string input )
-        {
-            return string.Join( "", input.Split( '-' ).Select( x => x.First().ToString().ToUpper() + x.Substring( 1 ).ToLower() ) );
-        }
-
-        private string ConvertCamelCaseToDash( string input )
-        {
-            return string.Concat( input.Select( ( x, i ) => i > 0 && char.IsUpper( x ) && (char.IsLower( input[ i - 1 ] ) || i < input.Length - 1 && char.IsLower( input[ i + 1 ] ))
-                ? "-" + x
-                : x.ToString() ) ).ToLowerInvariant();
+            ConfigureKeyword( mapper, MediaSource.Unsupported );
+            ConfigureKeyword( mapper, MediaSourceFeedDirection.Unsupported );
+            ConfigureKeyword( mapper, MediaCoating.Unsupported );
+            ConfigureKeyword( mapper, MediaGrain.Unsupported );
+            ConfigureKeyword( mapper, MediaPrePrinted.Unsupported );
+            ConfigureKeyword( mapper, MediaRecycled.Unsupported );
+            ConfigureKeyword( mapper, MediaTooth.Unsupported );
         }
 
         private void ConfigureKeyword<T>( IMapperConstructor map, T defaultValue ) where T : struct, Enum
         {
-            map.CreateIppMap<string, T>( ( src, ctx ) => Enum.TryParse( ConvertDashToCamelCase( src ), false, out T value ) ? value : defaultValue );
-            map.CreateIppMap<T, string>( ( src, ctx ) => ConvertCamelCaseToDash( src.ToString() ) );
+            map.CreateIppMap<string, T>( ( src, ctx ) => Enum.TryParse(src.ConvertDashToCamelCase(), false, out T value ) ? value : defaultValue );
+            map.CreateIppMap<T, string>( ( src, ctx ) => src.ToString().ConvertCamelCaseToDash() );
         }
     }
 }

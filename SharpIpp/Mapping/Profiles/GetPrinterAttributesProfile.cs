@@ -123,11 +123,11 @@ namespace SharpIpp.Mapping.Profiles
                     UriSecuritySupported =
                         map.MapFromDicSetNull<UriSecurity[]?>(src, PrinterAttribute.UriSecuritySupported),
                     MediaDefault = map.MapFromDic<string?>(src, PrinterAttribute.MediaDefault),
-                    MediaColDefault = map.MapFromDic<string?>( src, PrinterAttribute.MediaColDefault ),
                     MediaSupported = map.MapFromDicSetNull<string[]?>( src, PrinterAttribute.MediaSupported ),
                     SidesDefault = map.MapFromDic<Sides?>( src, PrinterAttribute.SidesDefault ),
                     SidesSupported = map.MapFromDicSetNull<Sides[]?>( src, PrinterAttribute.SidesSupported ),
                     FinishingsDefault = map.MapFromDic<Finishings?>( src, PrinterAttribute.FinishingsDefault ),
+                    FinishingsSupported = map.MapFromDicSetNull<Finishings[]?>(src, PrinterAttribute.FinishingsSupported),
                     PrinterResolutionDefault = map.MapFromDic<Resolution?>( src, PrinterAttribute.PrinterResolutionDefault ),
                     PrinterResolutionSupported = map.MapFromDicSetNull<Resolution[]?>( src, PrinterAttribute.PrinterResolutionSupported ),
                     PrintQualityDefault = map.MapFromDic<PrintQuality?>( src, PrinterAttribute.PrintQualityDefault ),
@@ -140,7 +140,10 @@ namespace SharpIpp.Mapping.Profiles
                     OrientationRequestedSupported = map.MapFromDicSetNull<Orientation[]?>( src, PrinterAttribute.OrientationRequestedSupported ),
                     PageRangesSupported = map.MapFromDic<bool?>( src, PrinterAttribute.PageRangesSupported ),
                     JobHoldUntilDefault = map.MapFromDic<JobHoldUntil?>( src, PrinterAttribute.JobHoldUntilDefault ),
-                    JobHoldUntilSupported = map.MapFromDicSetNull<JobHoldUntil[]?>( src, PrinterAttribute.JobHoldUntilSupported )
+                    JobHoldUntilSupported = map.MapFromDicSetNull<JobHoldUntil[]?>( src, PrinterAttribute.JobHoldUntilSupported ),
+                    OutputBinDefault = map.MapFromDic<string?>(src, PrinterAttribute.OutputBinDefault),
+                    OutputBinSupported = map.MapFromDicSetNull<string[]?>(src, PrinterAttribute.OutputBinSupported),
+                    MediaColDefault = src.ContainsKey(PrinterAttribute.MediaColDefault) ? MediaCol.Create(src[PrinterAttribute.MediaColDefault].FromBegCollection().ToIppDictionary(), map) : null
                 } );
 
             mapper.CreateMap<GetPrinterAttributesResponse, IDictionary<string, IppAttribute[]>>( ( src, map ) =>
@@ -226,8 +229,6 @@ namespace SharpIpp.Mapping.Profiles
                         dic.Add( PrinterAttribute.UriSecuritySupported, src.UriSecuritySupported.Select( x => new IppAttribute( Tag.Keyword, PrinterAttribute.UriSecuritySupported, map.Map<string>( x ) ) ).ToArray() );
                     if( src.MediaDefault != null )
                         dic.Add( PrinterAttribute.MediaDefault, new IppAttribute[] { new IppAttribute( Tag.Keyword, PrinterAttribute.MediaDefault, src.MediaDefault ) } );
-                    if ( src.MediaColDefault != null )
-                        dic.Add( PrinterAttribute.MediaColDefault, new IppAttribute[] { new IppAttribute( Tag.Keyword, PrinterAttribute.MediaColDefault, src.MediaColDefault ) } );
                     if ( src.MediaSupported?.Any() ?? false )
                         dic.Add( PrinterAttribute.MediaSupported, src.MediaSupported.Select( x => new IppAttribute( Tag.Keyword, PrinterAttribute.MediaSupported, x ) ).ToArray() );
                     if ( src.SidesDefault != null )
@@ -236,6 +237,8 @@ namespace SharpIpp.Mapping.Profiles
                         dic.Add( PrinterAttribute.SidesSupported, src.SidesSupported.Select( x => new IppAttribute( Tag.Keyword, PrinterAttribute.SidesSupported, map.Map<string>( x ) ) ).ToArray() );
                     if ( src.FinishingsDefault != null )
                         dic.Add( PrinterAttribute.FinishingsDefault, new IppAttribute[] { new IppAttribute( Tag.Enum, PrinterAttribute.FinishingsDefault, (int)src.FinishingsDefault.Value ) } );
+                    if (src.FinishingsSupported?.Any() ?? false)
+                        dic.Add(PrinterAttribute.FinishingsSupported, src.FinishingsSupported.Select(x => new IppAttribute(Tag.Enum, PrinterAttribute.FinishingsSupported, (int)x)).ToArray());
                     if ( src.PrinterResolutionDefault != null )
                         dic.Add( PrinterAttribute.PrinterResolutionDefault, new IppAttribute[] { new IppAttribute( Tag.Resolution, PrinterAttribute.PrinterResolutionDefault, src.PrinterResolutionDefault.Value ) } );
                     if ( src.PrinterResolutionSupported?.Any() ?? false )
@@ -262,6 +265,12 @@ namespace SharpIpp.Mapping.Profiles
                         dic.Add( PrinterAttribute.JobHoldUntilDefault, new IppAttribute[] { new IppAttribute( Tag.Keyword, PrinterAttribute.JobHoldUntilDefault, map.Map<string>( src.JobHoldUntilDefault.Value ) ) } );
                     if (src.JobHoldUntilSupported?.Any() ?? false)
                         dic.Add( PrinterAttribute.JobHoldUntilSupported, src.JobHoldUntilSupported.Select( x => new IppAttribute( Tag.Keyword, PrinterAttribute.JobHoldUntilSupported, map.Map<string>( x ) ) ).ToArray() );
+                    if (src.OutputBinDefault != null)
+                        dic.Add(PrinterAttribute.OutputBinDefault, new IppAttribute[] { new IppAttribute(Tag.Keyword, PrinterAttribute.OutputBinDefault, src.OutputBinDefault) });
+                    if (src.OutputBinSupported?.Any() ?? false)
+                        dic.Add(PrinterAttribute.OutputBinSupported, src.OutputBinSupported.Select(x => new IppAttribute(Tag.Keyword, PrinterAttribute.OutputBinSupported, x)).ToArray());
+                    if (src.MediaColDefault != null)
+                        dic.Add(PrinterAttribute.MediaColDefault, src.MediaColDefault.GetIppAttributes(map).ToBegCollection(PrinterAttribute.MediaColDefault).ToArray());
                     return dic;
                 } );
         }

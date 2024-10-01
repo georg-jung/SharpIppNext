@@ -26,7 +26,7 @@ namespace SharpIpp.Protocol
                 throw new ArgumentException($"Expected no-value length: 0, actual :{length}");
             }
 
-            return new NoValue();
+            return NoValue.Instance;
         }
 
         private void Write(bool value, BinaryWriter stream)

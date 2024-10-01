@@ -207,8 +207,6 @@ namespace SharpIpp.Models
 
         public string? MediaDefault { get; set; }
 
-        public string? MediaColDefault { get; set; }
-
         public string[]? MediaSupported { get; set; }
 
         public Sides? SidesDefault { get; set; }
@@ -216,6 +214,8 @@ namespace SharpIpp.Models
         public Sides[]? SidesSupported { get; set; }
 
         public Finishings? FinishingsDefault { get; set; }
+
+        public Finishings[]? FinishingsSupported { get; set; }
 
         public Resolution? PrinterResolutionDefault { get; set; }
 
@@ -240,5 +240,10 @@ namespace SharpIpp.Models
         public bool? PageRangesSupported { get; set; }
         public JobHoldUntil[]? JobHoldUntilSupported { get; set; }
         public JobHoldUntil? JobHoldUntilDefault { get; set; }
+
+        public string? OutputBinDefault { get; set; }
+
+        public string[]? OutputBinSupported { get; set; }
+        public MediaCol? MediaColDefault { get; set; }
     }
 }

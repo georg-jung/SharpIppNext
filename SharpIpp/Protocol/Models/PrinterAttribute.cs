@@ -1,4 +1,6 @@
-﻿namespace SharpIpp.Protocol.Models
+﻿using System.Collections.Generic;
+
+namespace SharpIpp.Protocol.Models
 {
     public static class PrinterAttribute
     {
@@ -42,11 +44,11 @@
         public const string PrintScalingSupported = "print-scaling-supported";
         public const string PrintScalingDefault = "print-scaling-default";
         public const string MediaDefault = "media-default";
-        public const string MediaColDefault = "media-col-default";
         public const string MediaSupported = "media-supported";
         public const string SidesDefault = "sides-default";
         public const string SidesSupported = "sides-supported";
         public const string FinishingsDefault = "finishings-default";
+        public const string FinishingsSupported = "finishings-supported";
         public const string PrinterResolutionDefault = "printer-resolution-default";
         public const string PrinterResolutionSupported = "printer-resolution-supported";
         public const string PrintQualityDefault = "print-quality-default";
@@ -60,5 +62,73 @@
         public const string PageRangesSupported = "page-ranges-supported";
         public const string JobHoldUntilDefault = "job-hold-until-default";
         public const string JobHoldUntilSupported = "job-hold-until-supported";
+        public const string OutputBinDefault = "output-bin-default";
+        public const string OutputBinSupported = "output-bin-supported";
+        public const string MediaColDefault = "media-col-default";
+
+        public static IEnumerable<string> GetAttributes(IppVersion version)
+        {
+            yield return CharsetSupported;
+            yield return PrinterUriSupported;
+            yield return UriSecuritySupported;
+            yield return UriAuthenticationSupported;
+            yield return PrinterName;
+            yield return PrinterLocation;
+            yield return PrinterInfo;
+            yield return PrinterMoreInfo;
+            yield return PrinterDriverInstaller;
+            yield return PrinterMakeAndModel;
+            yield return PrinterMoreInfoManufacturer;
+            yield return PrinterState;
+            yield return PrinterStateReasons;
+            yield return PrinterStateMessage;
+            yield return IppVersionsSupported ;
+            yield return OperationsSupported;
+            yield return MultipleDocumentJobsSupported;
+            yield return CharsetConfigured;
+            yield return NaturalLanguageConfigured;
+            yield return GeneratedNaturalLanguageSupported;
+            yield return DocumentFormatDefault;
+            yield return DocumentFormatSupported;
+            yield return PrinterIsAcceptingJobs;
+            yield return QueuedJobCount;
+            yield return PrinterMessageFromOperator;
+            yield return ColorSupported;
+            yield return ReferenceUriSchemesSupported;
+            yield return PdlOverrideSupported;
+            yield return PrinterUpTime;
+            yield return PrinterCurrentTime;
+            yield return MultipleOperationTimeOut;
+            yield return CompressionSupported;
+            yield return JobKOctetsSupported;
+            yield return JobImpressionsSupported;
+            yield return JobMediaSheetsSupported;
+            yield return PagesPerMinute;
+            yield return PagesPerMinuteColor;
+            yield return PrintScalingSupported;
+            yield return PrintScalingDefault;
+            yield return MediaDefault;
+            yield return MediaSupported;
+            yield return SidesDefault;
+            yield return SidesSupported;
+            yield return FinishingsDefault;
+            yield return FinishingsSupported;
+            yield return PrinterResolutionDefault;
+            yield return PrinterResolutionSupported;
+            yield return PrintQualityDefault;
+            yield return PrintQualitySupported;
+            yield return JobPriorityDefault;
+            yield return JobPrioritySupported;
+            yield return CopiesDefault;
+            yield return CopiesSupported;
+            yield return OrientationRequestedDefault;
+            yield return OrientationRequestedSupported;
+            yield return PageRangesSupported;
+            yield return JobHoldUntilDefault;
+            yield return JobHoldUntilSupported;
+            yield return OutputBinDefault;
+            yield return OutputBinSupported;
+            yield return MediaColDefault;
+        }
     }
 }
