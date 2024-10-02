@@ -548,7 +548,6 @@ public class IppProtocolTests
 
     [DataTestMethod]
     [DataRow( Tag.OctetStringWithAnUnspecifiedFormat )]
-    [DataRow( Tag.BegCollection )]
     [DataRow( Tag.TextWithoutLanguage )]
     [DataRow( Tag.NameWithoutLanguage )]
     [DataRow( Tag.Keyword )]
@@ -605,6 +604,7 @@ public class IppProtocolTests
     [DataRow( Tag.Unsupported )]
     [DataRow( Tag.Unknown )]
     [DataRow( Tag.NoValue )]
+    [DataRow( Tag.BegCollection )]
     [DataRow( Tag.EndCollection )]
     public void ReadValue_NoValue_ReturnsCorrectResult( Tag tag )
     {
