@@ -15,7 +15,7 @@ namespace SharpIpp.Protocol.Extensions
 
             foreach (var additionalAttribute in other)
             {
-                list.RemoveAll(x => x.Name == additionalAttribute.Name);
+                list.RemoveAll(x => !string.IsNullOrEmpty(x.Name) && x.Name == additionalAttribute.Name);
                 list.Add(additionalAttribute);
             }
         }
