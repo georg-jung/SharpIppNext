@@ -18,20 +18,8 @@ namespace SharpIpp.Models
     ///     and "document-natural-language" attributes for each document in the
     ///     multi-document Job object.
     /// </summary>
-    public class CreateJobRequest : IIppPrinterRequest
+    public class CreateJobRequest : IppRequest<CreateJobOperationAttributes>, IIppPrinterRequest
     {
-        public NewJobAttributes? NewJobAttributes { get; set; }
-
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
-
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
+        public JobTemplateAttributes? JobTemplateAttributes { get; set; }
     }
 }

@@ -31,7 +31,9 @@ namespace SharpIpp.Mapping.Profiles
             mapper.CreateIppMap<int, ResolutionUnit>((src, map) => (ResolutionUnit)src);
             mapper.CreateIppMap<int, PrinterType>((src, map) => (PrinterType)src);
             mapper.CreateIppMap<string, IppVersion>( ( src, map ) => new IppVersion( src ) );
-            mapper.CreateIppMap<NoValue, int>( ( src, map ) => 0 );
+            mapper.CreateIppMap<NoValue, int>((src, map) => 0);
+            mapper.CreateIppMap<NoValue, int?>( ( src, map ) => null );
+            mapper.CreateIppMap<NoValue, bool?>((src, map) => null);
             mapper.CreateIppMap<NoValue, JobState>( ( src, jobs) => 0);
 
             //All name parameters can come as StringWithLanguage or string
@@ -57,6 +59,7 @@ namespace SharpIpp.Mapping.Profiles
             ConfigureKeyword( mapper, MediaPrePrinted.Unsupported );
             ConfigureKeyword( mapper, MediaRecycled.Unsupported );
             ConfigureKeyword( mapper, MediaTooth.Unsupported );
+            ConfigureKeyword( mapper, PrintColorMode.Unsupported );
         }
 
         private void ConfigureKeyword<T>( IMapperConstructor map, T defaultValue ) where T : struct, Enum

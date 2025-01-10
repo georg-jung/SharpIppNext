@@ -1,5 +1,6 @@
 ﻿using SharpIpp.Models;
 using SharpIpp.Protocol;
+using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
 namespace SharpIpp.Mapping.Profiles
@@ -13,6 +14,8 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new IppRequestMessage { IppOperation = IppOperation.HoldJob };
                 map.Map<IIppJobRequest, IppRequestMessage>(src, dst);
+                if(src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
                 return dst;
             });
 
@@ -20,6 +23,7 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new HoldJobRequest();
                 map.Map<IIppRequestMessage, IIppJobRequest>( src, dst );
+                dst.OperationAttributes = HoldJobOperationAttributes.Create<HoldJobOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 return dst;
             } );
 

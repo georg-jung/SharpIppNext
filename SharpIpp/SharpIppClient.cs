@@ -141,7 +141,9 @@ public partial class SharpIppClient : ISharpIppClient
         where TOut : IIppResponseMessage
     {
         var ippRequest = constructRequestFunc(data);
-        var ippResponse = await SendAsync(data.PrinterUri, ippRequest, cancellationToken).ConfigureAwait(false);
+        if (data.OperationAttributes == null || data.OperationAttributes.PrinterUri == null)
+            throw new Exception("PrinterUri is not set");
+        var ippResponse = await SendAsync(data.OperationAttributes.PrinterUri, ippRequest, cancellationToken).ConfigureAwait(false);
         var res = constructResponseFunc(ippResponse);
         return res;
     }

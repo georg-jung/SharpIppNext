@@ -7,13 +7,11 @@ namespace SharpIpp.Models
 {
     public interface IIppRequest
     {
-        Uri PrinterUri { get; set; }
-
         IppVersion Version { get; set; }
 
         int RequestId { get; set; }
 
-        string? RequestingUserName { get; set; }
+        OperationAttributes? OperationAttributes { get; }
 
         IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
 

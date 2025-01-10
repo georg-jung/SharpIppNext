@@ -7,7 +7,7 @@ namespace SharpIpp.Models
 {
     public class GetJobAttributesResponse : IIppResponseMessage
     {
-        public JobAttributes JobAttributes { get; set; } = null!;
+        public JobDescriptionAttributes JobAttributes { get; set; } = null!;
 
         public IppVersion Version { get; set; } = IppVersion.V1_1;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using SharpIpp.Models;
 using SharpIpp.Protocol;
+using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
 namespace SharpIpp.Mapping.Profiles
@@ -21,16 +22,13 @@ namespace SharpIpp.Mapping.Profiles
                 var dst = new IppRequestMessage { IppOperation = IppOperation.PrintJob, Document = src.Document };
                 map.Map<IIppPrinterRequest, IppRequestMessage>(src, dst);
 
-                if (src.NewJobAttributes != null)
+                if (src.JobTemplateAttributes != null)
                 {
-                    map.Map(src.NewJobAttributes, dst);
+                    map.Map(src.JobTemplateAttributes, dst);
                 }
-
-                if (src.DocumentAttributes != null)
-                {
-                    map.Map(src.DocumentAttributes, dst);
-                }
-
+                if(src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
+                
                 return dst;
             });
 
@@ -41,10 +39,10 @@ namespace SharpIpp.Mapping.Profiles
                 {
                     throw new ArgumentException( $"{nameof( src.Document )} must be set" );
                 }
-                var dst = new PrintJobRequest { Document = src.Document, NewJobAttributes = new NewJobAttributes(), DocumentAttributes = new DocumentAttributes() };
+                var dst = new PrintJobRequest { Document = src.Document, JobTemplateAttributes = new JobTemplateAttributes() };
                 map.Map<IIppRequestMessage, IIppPrinterRequest>( src, dst );
-                map.Map( src, dst.NewJobAttributes );
-                map.Map( src, dst.DocumentAttributes );
+                map.Map( src, dst.JobTemplateAttributes );
+                dst.OperationAttributes = PrintJobOperationAttributes.Create<PrintJobOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 return dst;
             } );
 

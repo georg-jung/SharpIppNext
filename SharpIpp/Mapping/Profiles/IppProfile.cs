@@ -18,14 +18,6 @@ namespace SharpIpp.Mapping.Profiles
                 var operation = dst.OperationAttributes;
                 operation.Add(new IppAttribute(Tag.Charset, JobAttribute.AttributesCharset, "utf-8"));
                 operation.Add(new IppAttribute(Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en"));
-
-                if (src.RequestingUserName != null)
-                {
-                    operation.Add(new IppAttribute(Tag.NameWithoutLanguage,
-                        JobAttribute.RequestingUserName,
-                        src.RequestingUserName));
-                }
-
                 return dst;
             });
 
@@ -33,7 +25,6 @@ namespace SharpIpp.Mapping.Profiles
             {
                 dst.Version = src.Version;
                 dst.RequestId = src.RequestId;
-                dst.RequestingUserName = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.RequestingUserName )?.Value as string;
                 return dst;
             } );
 
@@ -64,16 +55,12 @@ namespace SharpIpp.Mapping.Profiles
             mapper.CreateMap<IIppPrinterRequest, IppRequestMessage>((src, dst, map) =>
             {
                 map.Map<IIppRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-                operation.Add(new IppAttribute(Tag.Uri, "printer-uri", src.PrinterUri.ToString()));
                 return dst;
             });
 
             mapper.CreateMap<IIppRequestMessage, IIppPrinterRequest>( ( src, dst, map ) =>
             {
                 map.Map<IIppRequestMessage, IIppRequest>( src, dst );
-                if ( Uri.TryCreate( src.OperationAttributes.FirstOrDefault( x => x.Name == "printer-uri" )?.Value as string, UriKind.RelativeOrAbsolute, out Uri printerUri ) )
-                    dst.PrinterUri = printerUri;
                 return dst;
             } );
         }

@@ -21,22 +21,8 @@ namespace SharpIpp.Models
     ///     job object MUST continue to use the same "job-uri" and "job-id"
     ///     attribute values.
     /// </summary>
-    public class RestartJobRequest : IIppJobRequest
+    public class RestartJobRequest : IppRequest<RestartJobOperationAttributes>, IIppJobRequest
     {
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public Uri? JobUrl { get; set; }
-
-        public int? JobId { get; set; }
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
     }
 }

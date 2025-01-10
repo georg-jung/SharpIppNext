@@ -1,41 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SharpIpp.Protocol.Models
 {
-    public class NewJobAttributes
+    public class JobTemplateAttributes
     {
-        /// <summary>
-        ///     The client OPTIONALLY supplies this attribute.  The Printer
-        ///     object MUST support this attribute.  It contains the client
-        ///     supplied Job name.  If this attribute is supplied by the
-        ///     client, its value is used for the "job-name" attribute of the
-        ///     newly created Job object.  The client MAY automatically include
-        ///     any information that will help the end-user distinguish amongst
-        ///     his/her jobs, such as the name of the application program along
-        ///     with information from the document, such as the document name,
-        ///     document subject, or source file name.  If this attribute is
-        ///     not supplied by the client, the Printer generates a name to use
-        ///     in the "job-name" attribute of the newly created Job object
-        /// </summary>
-        public string? JobName { get; set; }
-
-        /// <summary>
-        ///     The client OPTIONALLY supplies this attribute.  The Printer
-        ///     object MUST support this attribute.  The value 'true' indicates
-        ///     that total fidelity to client supplied Job Template attributes
-        ///     and values is required, else the Printer object MUST reject the
-        ///     Print-Job request.  The value 'false' indicates that a
-        ///     reasonable attempt to print the Job object is acceptable and
-        ///     the Printer object MUST accept the Print-Job request. If not
-        ///     supplied, the Printer object assumes the value is 'false'.  All
-        ///     Printer objects MUST support both types of job processing.  See
-        ///     section 15 for a full description of "ipp-attribute-fidelity"
-        ///     and its relationship to other attributes, especially the
-        ///     Printer object's "pdl-override-supported" attribute.
-        /// </summary>
-        public bool? IppAttributeFidelity { get; set; }
-
-
         /// <summary>
         ///     This attribute specifies a priority for scheduling the Job. A higher
         ///     value specifies a higher priority. The value 1 indicates the lowest
@@ -209,6 +178,8 @@ namespace SharpIpp.Protocol.Models
         public PrintQuality? PrintQuality { get; set; }
 
         public PrintScaling? PrintScaling { get; set; }
+
+        public PrintColorMode? PrintColorMode { get; set; }
 
         public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
 

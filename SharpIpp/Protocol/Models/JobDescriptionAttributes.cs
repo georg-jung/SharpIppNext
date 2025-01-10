@@ -2,7 +2,7 @@
 
 namespace SharpIpp.Protocol.Models
 {
-    public class JobAttributes
+    public class JobDescriptionAttributes
     {
         /// <summary>
         ///     This REQUIRED attribute contains the ID of the job.  The Printer, on
@@ -17,6 +17,9 @@ namespace SharpIpp.Protocol.Models
         /// <code>job-id</code>
         public int? JobId { get; set; }
 
+        /// <summary>
+        /// https://tools.ietf.org/html/rfc2911#section-4.3.1
+        /// </summary>
         public string? JobUri { get; set; }
 
         /// <summary>
@@ -35,19 +38,9 @@ namespace SharpIpp.Protocol.Models
         public string? JobPrinterUri { get; set; }
 
         /// <summary>
-        ///     This REQUIRED attribute is the name of the job.  It is a name that is
-        ///     more user friendly than the "job-uri" attribute value.  It does not
-        ///     need to be unique between Jobs.  The Job's "job-name" attribute is
-        ///     set to the value supplied by the client in the "job-name" operation
-        ///     attribute in the create request (see Section 3.2.1.1).   If, however,
-        ///     the "job-name" operation attribute is not supplied by the client in
-        ///     the create request, the Printer object, on creation of the Job, MUST
-        ///     generate a name.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.3.5
+        /// https://tools.ietf.org/html/rfc2911#section-4.3.4
         /// </summary>
-        /// <example>job63</example>
-        /// <code>job-name</code>
-        public string? JobName { get; set; }
+        public string? JobMoreInfo { get; set; }
 
         /// <summary>
         ///     This REQUIRED attribute contains the name of the end user that
@@ -208,46 +201,9 @@ namespace SharpIpp.Protocol.Models
         /// <code>finishings</code>
         public Finishings? Finishings { get; set; }
 
-        /// <summary>
-        ///     This attribute specifies the total number of octets processed in K
-        ///     octets, i.e., in units of 1024 octets so far.  The value MUST be
-        ///     rounded up, so that a job between 1 and 1024 octets inclusive MUST be
-        ///     indicated as being 1, 1025 to 2048 inclusive MUST be 2, etc.
-        ///     For implementations where multiple copies are produced by the
-        ///     interpreter with only a single pass over the data, the final value
-        ///     MUST be equal to the value of the "job-k-octets" attribute.  For
-        ///     implementations where multiple copies are produced by the interpreter
-        ///     by processing the data for each copy, the final value MUST be a
-        ///     multiple of the value of the "job-k-octets" attribute.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.3.18.1
-        /// </summary>
-        /// <example>26</example>
-        /// <code>job-k-octets-processed</code>
-        public int? JobKOctetsProcessed { get; set; }
+        
 
-        /// <summary>
-        ///     This attribute specifies the total size in number of impressions of
-        ///     the document(s) being submitted.
-        ///     As with "job-k-octets", this value MUST NOT include the
-        ///     multiplicative factors contributed by the number of copies specified
-        ///     by the "copies" attribute, independent of whether the device can
-        ///     process multiple copies without making multiple passes over the job
-        ///     or document data and independent of whether the output is collated or
-        ///     not.  Thus the value is independent of the implementation and
-        ///     reflects the size of the document(s) measured in impressions
-        ///     independent of the number of copies.
-        ///     As with "job-k-octets", this value MUST also not include the
-        ///     multiplicative factor due to a copies instruction embedded in the
-        ///     document data.  If the document data actually includes replications
-        ///     of the document data, this value will include such replication.  In
-        ///     other words, this value is always the number of impressions in the
-        ///     source document data, rather than a measure of the number of
-        ///     impressions to be produced by the job.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.3.17.2
-        /// </summary>
-        /// <example>no value</example>
-        /// <code>job-impressions</code>
-        public int? JobImpressions { get; set; }
+        
 
         /// <summary>
         ///     This job attribute specifies the number of impressions completed for
@@ -259,22 +215,7 @@ namespace SharpIpp.Protocol.Models
         /// <code>job-impressions-completed</code>
         public int? JobImpressionsCompleted { get; set; }
 
-        /// <summary>
-        ///     This attribute specifies the total number of media sheets to be
-        ///     produced for this job.
-        ///     Unlike the "job-k-octets" and the "job-impressions" attributes, this
-        ///     value MUST include the multiplicative factors contributed by the
-        ///     number of copies specified by the "copies" attribute and a 'number of
-        ///     copies' instruction embedded in the document data, if any.  This
-        ///     difference allows the system administrator to control the lower and
-        ///     upper bounds of both (1) the size of the document(s) with "job-k-
-        ///     octets-supported" and "job-impressions-supported" and (2) the size of
-        ///     the job with "job-media-sheets-supported".
-        ///     https://tools.ietf.org/html/rfc2911#section-4.3.17.3
-        /// </summary>
-        /// <example>no value</example>
-        /// <code>job-media-sheets</code>
-        public int? JobMediaSheets { get; set; }
+        
 
         /// <summary>
         ///     This job attribute specifies the media-sheets completed marking and
@@ -299,64 +240,6 @@ namespace SharpIpp.Protocol.Models
         /// <example>9</example>
         /// <code>job-state</code>
         public JobState? JobState { get; set; }
-
-        /// <summary>
-        ///     The client OPTIONALLY supplies this attribute.  The Printer
-        ///     object MUST support this attribute and the "compression-
-        ///     supported" attribute (see section 4.4.32).  The client supplied
-        ///     "compression" operation attribute identifies the compression
-        ///     algorithm used on the document data. The following cases exist:
-        /// </summary>
-        /// <example>none</example>
-        /// <code>compression</code>
-        public Compression? Compression { get; set; }
-
-        /// <summary>
-        ///     The client OPTIONALLY supplies this attribute.  The Printer
-        ///     object MUST support this attribute.  The value of this
-        ///     attribute identifies the format of the supplied document data.
-        ///     The following cases exist:
-        /// </summary>
-        /// <example>application/octet-stream</example>
-        /// <code>document-format</code>
-        public string? DocumentFormat { get; set; }
-
-        /// <summary>
-        ///     The client OPTIONALLY supplies this attribute.  The Printer
-        ///     object MUST support this attribute.   It contains the client
-        ///     supplied document name.  The document name MAY be different
-        ///     than the Job name.  Typically, the client software
-        ///     automatically supplies the document name on behalf of the end
-        ///     user by using a file name or an application generated name.  If
-        ///     this attribute is supplied, its value can be used in a manner
-        ///     defined by each implementation.  Examples include: printed
-        ///     along with the Job (job start sheet, page adornments, etc.),
-        ///     used by accounting or resource tracking management tools, or
-        ///     even stored along with the document as a document level
-        ///     attribute.  IPP/1.1 does not support the concept of document
-        ///     level attributes.
-        /// </summary>
-        /// <example>job63</example>
-        /// <code>document-name</code>
-        public string? DocumentName { get; set; }
-
-        /// <summary>
-        ///     The client OPTIONALLY supplies this attribute.  The Printer
-        ///     object MUST support this attribute.  The value 'true' indicates
-        ///     that total fidelity to client supplied Job Template attributes
-        ///     and values is required, else the Printer object MUST reject the
-        ///     Print-Job request.  The value 'false' indicates that a
-        ///     reasonable attempt to print the Job object is acceptable and
-        ///     the Printer object MUST accept the Print-Job request. If not
-        ///     supplied, the Printer object assumes the value is 'false'.  All
-        ///     Printer objects MUST support both types of job processing.  See
-        ///     section 15 for a full description of "ipp-attribute-fidelity"
-        ///     and its relationship to other attributes, especially the
-        ///     Printer object's "pdl-override-supported" attribute.
-        /// </summary>
-        /// <example>False</example>
-        /// <code>ipp-attribute-fidelity</code>
-        public bool? IppAttributeFidelity { get; set; }
 
         /// <summary>
         ///     The Printer object OPTIONALLY returns the Job object's OPTIONAL

@@ -2,6 +2,7 @@
 using System.Linq;
 using SharpIpp.Models;
 using SharpIpp.Protocol;
+using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
 namespace SharpIpp.Mapping.Profiles
@@ -14,24 +15,19 @@ namespace SharpIpp.Mapping.Profiles
             mapper.CreateMap<PrintUriRequest, IppRequestMessage>((src, map) =>
             {
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (src.DocumentUri == null)
+                if (src.OperationAttributes?.DocumentUri == null)
                 {
-                    throw new ArgumentException($"{nameof(src.DocumentUri)} must be set");
+                    throw new ArgumentException($"{nameof(JobAttribute.DocumentUri)} must be set");
                 }
 
                 var dst = new IppRequestMessage { IppOperation = IppOperation.PrintUri };
                 map.Map<IIppPrinterRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-                operation.Add(new IppAttribute(Tag.Uri, "document-uri", src.DocumentUri.ToString()));
+                if(src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
 
-                if (src.NewJobAttributes != null)
+                if (src.JobTemplateAttributes != null)
                 {
-                    map.Map(src.NewJobAttributes, dst);
-                }
-
-                if (src.DocumentAttributes != null)
-                {
-                    map.Map(src.DocumentAttributes, dst);
+                    map.Map(src.JobTemplateAttributes, dst);
                 }
 
                 return dst;
@@ -41,16 +37,11 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new PrintUriRequest
                 {
-                    NewJobAttributes = new NewJobAttributes(),
-                    DocumentAttributes = new DocumentAttributes()
+                    JobTemplateAttributes = new JobTemplateAttributes()
                 };
                 map.Map<IIppRequestMessage, IIppPrinterRequest>( src, dst );
-                if ( Uri.TryCreate( src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.DocumentUri )?.Value as string, UriKind.RelativeOrAbsolute, out var documentUri ) )
-                    dst.DocumentUri = documentUri;
-                else
-                    throw new ArgumentException( $"{JobAttribute.DocumentUri} attribute must be set" ); ;
-                map.Map( src, dst.NewJobAttributes );
-                map.Map( src, dst.DocumentAttributes );
+                map.Map( src, dst.JobTemplateAttributes );
+                dst.OperationAttributes = PrintUriOperationAttributes.Create<PrintUriOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 return dst;
             } );
 

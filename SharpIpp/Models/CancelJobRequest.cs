@@ -13,22 +13,8 @@ namespace SharpIpp.Models
     ///     Cancel-Job is received, some media sheet pages might be printed
     ///     before the job is actually terminated.
     /// </summary>
-    public class CancelJobRequest : IIppJobRequest
+    public class CancelJobRequest : IppRequest<CancelJobOperationAttributes>, IIppJobRequest
     {
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public Uri? JobUrl { get; set; }
-
-        public int? JobId { get; set; }
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
     }
 }

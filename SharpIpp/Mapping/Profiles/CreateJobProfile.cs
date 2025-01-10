@@ -1,5 +1,6 @@
 ﻿using SharpIpp.Models;
 using SharpIpp.Protocol;
+using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
 namespace SharpIpp.Mapping.Profiles
@@ -13,20 +14,19 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new IppRequestMessage { IppOperation = IppOperation.CreateJob };
                 map.Map<IIppPrinterRequest, IppRequestMessage>(src, dst);
-
-                if (src.NewJobAttributes != null)
-                {
-                    map.Map(src.NewJobAttributes, dst);
-                }
-
+                if (src.JobTemplateAttributes != null)
+                    map.Map(src.JobTemplateAttributes, dst);
+                if(src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
                 return dst;
             });
 
             mapper.CreateMap<IIppRequestMessage, CreateJobRequest>( ( src, map ) =>
             {
-                var dst = new CreateJobRequest { NewJobAttributes = new NewJobAttributes() };
+                var dst = new CreateJobRequest { JobTemplateAttributes = new JobTemplateAttributes() };
                 map.Map<IIppRequestMessage, IIppPrinterRequest>( src, dst );
-                map.Map( src, dst.NewJobAttributes );
+                map.Map( src, dst.JobTemplateAttributes );
+                dst.OperationAttributes = CreateJobOperationAttributes.Create<CreateJobOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 return dst;
             } );
 

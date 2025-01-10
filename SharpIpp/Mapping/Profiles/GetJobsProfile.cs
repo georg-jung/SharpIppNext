@@ -18,29 +18,8 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new IppRequestMessage { IppOperation = IppOperation.GetJobs };
                 map.Map<IIppPrinterRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-
-                if (src.Limit != null)
-                {
-                    operation.Add(new IppAttribute(Tag.Integer, JobAttribute.Limit, src.Limit.Value));
-                }
-
-                if (src.WhichJobs != null)
-                {
-                    operation.Add(new IppAttribute(Tag.Keyword, JobAttribute.WhichJobs, map.Map<string>(src.WhichJobs.Value)));
-                }
-
-                if (src.MyJobs != null)
-                {
-                    operation.Add(new IppAttribute(Tag.Boolean, JobAttribute.MyJobs, map.Map<string>(src.MyJobs.Value)));
-                }
-
-                if (src.RequestedAttributes != null)
-                {
-                    operation.AddRange(src.RequestedAttributes.Select(requestedAttribute =>
-                        new IppAttribute(Tag.Keyword, JobAttribute.RequestedAttributes, requestedAttribute)));
-                }
-
+                if(src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
                 dst.OperationAttributes.Populate(src.AdditionalOperationAttributes);
                 dst.JobAttributes.Populate(src.AdditionalJobAttributes);
                 return dst;
@@ -50,12 +29,7 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new GetJobsRequest();
                 map.Map<IIppRequestMessage, IIppPrinterRequest>( src, dst );
-                dst.Limit = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.Limit )?.Value as int?;
-                dst.WhichJobs = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.WhichJobs )?.Value as WhichJobs?;
-                dst.MyJobs = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.MyJobs )?.Value as bool?;
-                var requestedAttributes = src.OperationAttributes.Where( x => x.Name == JobAttribute.RequestedAttributes ).Select( x => x.Value ).OfType<string>().ToArray();
-                if ( requestedAttributes.Any() )
-                    dst.RequestedAttributes = requestedAttributes;
+                dst.OperationAttributes = GetJobsOperationAttributes.Create<GetJobsOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 var additionalOperationAttributes = src.OperationAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
                 if (additionalOperationAttributes.Any())
                     dst.AdditionalOperationAttributes = additionalOperationAttributes;
@@ -68,7 +42,7 @@ namespace SharpIpp.Mapping.Profiles
             // https://tools.ietf.org/html/rfc2911#section-3.3.4.2
             mapper.CreateMap<IppResponseMessage, GetJobsResponse>((src, map) =>
             {
-                var dst = new GetJobsResponse { Jobs = map.Map<List<IppSection>, JobAttributes[]>(src.Sections) };
+                var dst = new GetJobsResponse { Jobs = map.Map<List<IppSection>, JobDescriptionAttributes[]>(src.Sections) };
                 map.Map<IppResponseMessage, IIppResponseMessage>(src, dst);
                 return dst;
             });
@@ -77,17 +51,17 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new IppResponseMessage();
                 map.Map<IIppResponseMessage, IppResponseMessage>( src, dst );
-                dst.Sections.AddRange(map.Map<JobAttributes[], List<IppSection>>(src.Jobs));
+                dst.Sections.AddRange(map.Map<JobDescriptionAttributes[], List<IppSection>>(src.Jobs));
                 return dst;
             } );
 
             //https://tools.ietf.org/html/rfc2911#section-4.4
-            mapper.CreateMap<List<IppSection>, JobAttributes[]>((src, map) =>
+            mapper.CreateMap<List<IppSection>, JobDescriptionAttributes[]>((src, map) =>
                 src.Where(x => x.Tag == SectionTag.JobAttributesTag)
-                    .Select(x => map.Map<JobAttributes>(x.AllAttributes()))
+                    .Select(x => map.Map<JobDescriptionAttributes>(x.AllAttributes()))
                     .ToArray());
 
-            mapper.CreateMap<JobAttributes[], List<IppSection>>( (src, map) =>
+            mapper.CreateMap<JobDescriptionAttributes[], List<IppSection>>( (src, map) =>
             {
                 return src.Select(x =>
                 {

@@ -18,14 +18,8 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new IppRequestMessage { IppOperation = IppOperation.GetJobAttributes };
                 map.Map<IIppJobRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-
-                if (src.RequestedAttributes != null)
-                {
-                    operation.AddRange(src.RequestedAttributes.Select(requestedAttribute =>
-                        new IppAttribute(Tag.Keyword, JobAttribute.RequestedAttributes, requestedAttribute)));
-                }
-
+                if (src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
                 dst.OperationAttributes.Populate(src.AdditionalOperationAttributes);
                 dst.JobAttributes.Populate(src.AdditionalJobAttributes);
                 return dst;
@@ -35,9 +29,7 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new GetJobAttributesRequest();
                 map.Map<IIppRequestMessage, IIppJobRequest>( src, dst );
-                var requestedAttributes = src.OperationAttributes.Where( x => x.Name == JobAttribute.RequestedAttributes ).Select( x => x.Value ).OfType<string>().ToArray();
-                if ( requestedAttributes.Any() )
-                    dst.RequestedAttributes = requestedAttributes;
+                dst.OperationAttributes = GetJobAttributesOperationAttributes.Create<GetJobAttributesOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 var additionalOperationAttributes = src.OperationAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
                 if (additionalOperationAttributes.Any())
                     dst.AdditionalOperationAttributes = additionalOperationAttributes;
@@ -50,7 +42,7 @@ namespace SharpIpp.Mapping.Profiles
             //https://tools.ietf.org/html/rfc2911#section-4.4
             mapper.CreateMap<IppResponseMessage, GetJobAttributesResponse>((src, map) =>
             {
-                var dst = new GetJobAttributesResponse { JobAttributes = map.Map<JobAttributes>(src.AllAttributes()) };
+                var dst = new GetJobAttributesResponse { JobAttributes = map.Map<JobDescriptionAttributes>(src.AllAttributes()) };
                 map.Map<IppResponseMessage, IIppResponseMessage>(src, dst);
                 return dst;
             });
@@ -65,25 +57,17 @@ namespace SharpIpp.Mapping.Profiles
                 return dst;
             } );
 
-            mapper.CreateMap<IDictionary<string, IppAttribute[]>, JobAttributes>((src, map) => new JobAttributes
+            mapper.CreateMap<IDictionary<string, IppAttribute[]>, JobDescriptionAttributes>((src, map) => new JobDescriptionAttributes
             {
-                Compression = map.MapFromDic<Compression?>(src, JobAttribute.Compression),
                 Copies = map.MapFromDic<int?>(src, JobAttribute.Copies),
                 DateTimeAtCompleted = map.MapFromDic<DateTimeOffset?>(src, JobAttribute.DateTimeAtCompleted),
                 DateTimeAtCreation = map.MapFromDic<DateTimeOffset?>(src, JobAttribute.DateTimeAtCreation),
                 DateTimeAtProcessing = map.MapFromDic<DateTimeOffset?>(src, JobAttribute.DateTimeAtProcessing),
-                DocumentFormat = map.MapFromDic<string?>(src, JobAttribute.DocumentFormat),
-                DocumentName = map.MapFromDic<string?>(src, JobAttribute.DocumentName),
                 Finishings = map.MapFromDic<Finishings?>(src, JobAttribute.Finishings),
-                IppAttributeFidelity = map.MapFromDic<bool?>(src, JobAttribute.IppAttributeFidelity),
                 JobId = map.MapFromDic<int?>(src, JobAttribute.JobId),
                 JobUri = map.MapFromDic<string?>(src, JobAttribute.JobUri),
-                JobImpressions = map.MapFromDic<int?>(src, JobAttribute.JobImpressions),
                 JobImpressionsCompleted = map.MapFromDic<int?>(src, JobAttribute.JobImpressionsCompleted),
-                JobKOctetsProcessed = map.MapFromDic<int?>(src, JobAttribute.JobKOctetsProcessed),
-                JobMediaSheets = map.MapFromDic<int?>(src, JobAttribute.JobMediaSheets),
                 JobMediaSheetsCompleted = map.MapFromDic<int?>(src, JobAttribute.JobMediaSheetsCompleted),
-                JobName = map.MapFromDic<string?>(src, JobAttribute.JobName),
                 JobOriginatingUserName = map.MapFromDic<string?>(src, JobAttribute.JobOriginatingUserName),
                 JobOriginatingUserNameLanguage =
                     map.MapFromDicLanguage(src, JobAttribute.JobOriginatingUserNameLanguage),
@@ -106,11 +90,9 @@ namespace SharpIpp.Mapping.Profiles
                 TimeAtProcessing = map.MapFromDic<int?>(src, JobAttribute.TimeAtProcessing),
             });
 
-            mapper.CreateMap<JobAttributes, IDictionary<string, IppAttribute[]>>( ( src, map ) =>
+            mapper.CreateMap<JobDescriptionAttributes, IDictionary<string, IppAttribute[]>>( ( src, map ) =>
             {
                 var dic = new Dictionary<string, IppAttribute[]>();
-                if ( src.Compression != null )
-                    dic.Add( JobAttribute.Compression, new IppAttribute[] { new IppAttribute( Tag.Keyword, JobAttribute.Compression, map.Map<string>( src.Compression ) ) } );
                 if ( src.Copies != null )
                     dic.Add( JobAttribute.Copies, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.Copies, src.Copies.Value ) } );
                 if (src.DateTimeAtCompleted != null)
@@ -134,30 +116,16 @@ namespace SharpIpp.Mapping.Profiles
                     else
                         dic.Add(JobAttribute.DateTimeAtProcessing, new IppAttribute[] { new IppAttribute(Tag.NoValue, JobAttribute.DateTimeAtProcessing, NoValue.Instance) });
                 }
-                if ( src.DocumentFormat != null )
-                    dic.Add( JobAttribute.DocumentFormat, new IppAttribute[] { new IppAttribute( Tag.MimeMediaType, JobAttribute.DocumentFormat, src.DocumentFormat ) } );
-                if ( src.DocumentName != null )
-                    dic.Add( JobAttribute.DocumentName, new IppAttribute[] { new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.DocumentName, src.DocumentName ) } );
                 if ( src.Finishings != null )
                     dic.Add( JobAttribute.Finishings, new IppAttribute[] { new IppAttribute( Tag.Enum, JobAttribute.Finishings, (int)src.Finishings.Value ) } );
-                if(src.IppAttributeFidelity != null )
-                    dic.Add( JobAttribute.IppAttributeFidelity, new IppAttribute[] { new IppAttribute( Tag.Boolean, JobAttribute.IppAttributeFidelity, src.IppAttributeFidelity.Value ) } );
                 if ( src.JobId != null )
                     dic.Add( JobAttribute.JobId, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.JobId, src.JobId.Value ) } );
                 if( src.JobUri != null )
                     dic.Add( JobAttribute.JobUri, new IppAttribute[] { new IppAttribute( Tag.Uri, JobAttribute.JobUri, src.JobUri ) } );
-                if ( src.JobImpressions != null )
-                    dic.Add( JobAttribute.JobImpressions, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.JobImpressions, src.JobImpressions.Value ) } );
                 if ( src.JobImpressionsCompleted != null )
                     dic.Add( JobAttribute.JobImpressionsCompleted, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.JobImpressionsCompleted, src.JobImpressionsCompleted.Value ) } );
-                if ( src.JobKOctetsProcessed != null )
-                    dic.Add( JobAttribute.JobKOctetsProcessed, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.JobKOctetsProcessed, src.JobKOctetsProcessed.Value ) } );
-                if ( src.JobMediaSheets != null )
-                    dic.Add( JobAttribute.JobMediaSheets, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.JobMediaSheets, src.JobMediaSheets.Value ) } );
                 if ( src.JobMediaSheetsCompleted != null )
                     dic.Add( JobAttribute.JobMediaSheetsCompleted, new IppAttribute[] { new IppAttribute( Tag.Integer, JobAttribute.JobMediaSheetsCompleted, src.JobMediaSheetsCompleted.Value ) } );
-                if ( src.JobName != null )
-                    dic.Add( JobAttribute.JobName, new IppAttribute[] { new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.JobName, src.JobName ) } );
                 if ( src.JobOriginatingUserName != null )
                     dic.Add( JobAttribute.JobOriginatingUserName, new IppAttribute[] { new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.JobOriginatingUserName, src.JobOriginatingUserName ) } );
                 if ( src.JobOriginatingUserNameLanguage != null )

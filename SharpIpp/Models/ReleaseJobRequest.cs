@@ -18,22 +18,8 @@ namespace SharpIpp.Models
     ///     specified' value from the job's "job-state-reasons" attribute, if
     ///     present.
     /// </summary>
-    public class ReleaseJobRequest : IIppJobRequest
+    public class ReleaseJobRequest : IppRequest<ReleaseJobOperationAttributes>, IIppJobRequest
     {
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
-
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public Uri? JobUrl { get; set; }
-
-        public int? JobId { get; set; }
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
+        
     }
 }

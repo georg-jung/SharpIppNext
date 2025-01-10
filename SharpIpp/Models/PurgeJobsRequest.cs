@@ -21,18 +21,8 @@ namespace SharpIpp.Models
     ///     universal management protocol or just to manage IPP jobs,
     ///     respectively.
     /// </summary>
-    public class PurgeJobsRequest : IIppPrinterRequest
+    public class PurgeJobsRequest : IppRequest<PurgeJobsOperationAttributes>, IIppPrinterRequest
     {
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
-
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
+        
     }
 }

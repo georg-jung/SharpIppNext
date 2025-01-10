@@ -60,6 +60,10 @@ namespace SharpIpp.Protocol.Models
         public const string PrinterUri = "printer-uri";
         public const string DocumentUri = "document-uri";
         public const string LastDocument = "last-document";
+        public const string PrintColorMode = "print-color-mode";
+        public const string Message = "message";
+        public const string StatusMessage = "status-message";
+        public const string DetailedStatusMessage = "detailed-status-message";
 
         public static IEnumerable<string> GetAttributes( IppVersion version )
         {
@@ -117,6 +121,8 @@ namespace SharpIpp.Protocol.Models
             yield return PrinterUri;
             yield return DocumentUri;
             yield return LastDocument;
+            yield return PrintColorMode;
+            yield return Message;
         }
     }
 }

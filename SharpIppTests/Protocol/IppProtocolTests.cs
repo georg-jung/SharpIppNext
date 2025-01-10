@@ -208,25 +208,6 @@ public class IppProtocolTests
         message.OperationAttributes.Add( new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ) );
         message.OperationAttributes.Add( new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.JobName, "Test Job" ) );
         message.JobAttributes.Add( new IppAttribute( Tag.Integer, JobAttribute.Copies, 1 ) );
-
-
-        //message.OperationAttributes.Add( new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "ipp://127.0.0.1:631/" ) );
-        /*
-        message.OperationAttributes.Add( new IppAttribute( Tag.BegCollection, JobAttribute.IppAttributeFidelity, false ) ); //todo: check beg
-        message.OperationAttributes.Add( new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.DocumentName, "Document Name" ) );
-        message.OperationAttributes.Add( new IppAttribute( Tag.MimeMediaType, JobAttribute.DocumentFormat, "application/octet-stream" ) );
-        message.OperationAttributes.Add( new IppAttribute( Tag.NaturalLanguage, JobAttribute.DocumentNaturalLanguage, "en" ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.Keyword, JobAttribute.MultipleDocumentHandling, MultipleDocumentHandling.SeparateDocumentsCollatedCopies.ToString() ) );
-        
-        message.JobAttributes.Add( new IppAttribute( Tag.Enum, JobAttribute.Finishings, (int)Finishings.None ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.RangeOfInteger, JobAttribute.PageRanges, new Models.Range( 1, 2 ) ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.Keyword, JobAttribute.Sides, Sides.OneSided.ToString() ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.Integer, JobAttribute.NumberUp, 1 ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.Enum, JobAttribute.OrientationRequested, (int)Orientation.Portrait ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.Resolution, JobAttribute.PrinterResolution, new Resolution( 600, 600, ResolutionUnit.DotsPerInch ) ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.Enum, JobAttribute.PrintQuality, (int)PrintQuality.Normal ) );
-        message.JobAttributes.Add( new IppAttribute( Tag.Keyword, JobAttribute.PrintScaling, PrintScaling.Fit.ToString() ) );
-        */
         // Act
         await protocol.WriteIppRequestAsync( message, memoryStream );
         // Assert
@@ -381,6 +362,23 @@ public class IppProtocolTests
         // Assert
         memoryStream.ToArray().Should().Equal( 0x01, 0x44, 0x00, 0x16, 0x69, 0x70, 0x70, 0x2D, 0x76, 0x65, 0x72, 0x73,
             0x69, 0x6F, 0x6E, 0x73, 0x2D, 0x73, 0x75, 0x70, 0x70, 0x6F, 0x72, 0x74, 0x65, 0x64, 0x00, 0x03, 0x31, 0x2E, 0x30 );
+    }
+
+    [TestMethod]
+    public void WriteAttribute_BegCollection_ShouldBeWritten()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        using MemoryStream memoryStream = new();
+        using BinaryWriter binaryWriter = new(memoryStream);
+        // Act
+        protocol.WriteAttribute(
+            binaryWriter,
+            new IppAttribute(Tag.BegCollection, PrinterAttribute.MediaColDefault, NoValue.Instance),
+            null);
+        // Assert
+        memoryStream.ToArray().Should().Equal(0x34, 0x00, 0x11, 0x6D, 0x65, 0x64, 0x69, 0x61, 0x2D, 0x63, 0x6F, 0x6C,
+            0x2D, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00, 0x00);
     }
 
     [TestMethod()]
@@ -825,6 +823,20 @@ public class IppProtocolTests
         Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, null );
         // Assert
         act.Should().NotThrow().Which.Should().BeEquivalentTo( new IppAttribute( Tag.Keyword, PrinterAttribute.IppVersionsSupported, new IppVersion( 1, 1 ).ToString() ) );
+    }
+
+    [TestMethod]
+    public void ReadAttribute_BegCollection_ReturnsCorrectResult()
+    {
+        // Arrange
+        var protocol = new IppProtocol();
+        using MemoryStream memoryStream = new(new byte[] { 0x00, 0x11, 0x6D, 0x65, 0x64, 0x69, 0x61, 0x2D, 0x63, 0x6F, 0x6C,
+            0x2D, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00, 0x00 });
+        using BinaryReader binaryReader = new(memoryStream);
+        // Act
+        Func<IppAttribute> act = () => protocol.ReadAttribute(Tag.BegCollection, binaryReader, null);
+        // Assert
+        act.Should().NotThrow().Which.Should().BeEquivalentTo(new IppAttribute(Tag.BegCollection, PrinterAttribute.MediaColDefault, NoValue.Instance));
     }
 
     [TestMethod]

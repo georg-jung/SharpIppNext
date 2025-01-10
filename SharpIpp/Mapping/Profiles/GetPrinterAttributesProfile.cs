@@ -18,26 +18,18 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new IppRequestMessage { IppOperation = IppOperation.GetPrinterAttributes };
                 map.Map<IIppPrinterRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-
-                if (src.RequestedAttributes != null)
-                {
-                    operation.AddRange(src.RequestedAttributes.Select(requestedAttribute =>
-                        new IppAttribute(Tag.Keyword, JobAttribute.RequestedAttributes, requestedAttribute)));
-                }
-
+                if(src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
                 dst.OperationAttributes.Populate(src.AdditionalOperationAttributes);
                 dst.JobAttributes.Populate(src.AdditionalJobAttributes);
                 return dst;
             });
 
-            mapper.CreateMap<IIppRequestMessage, GetPrinterAttributesRequest>( ( src, map ) =>
+            mapper.CreateMap<IIppRequestMessage, GetPrinterAttributesRequest>((src, map) =>
             {
                 var dst = new GetPrinterAttributesRequest();
-                map.Map<IIppRequestMessage, IIppPrinterRequest>( src, dst );
-                var requestedAttributes = src.OperationAttributes.Where( x => x.Name == JobAttribute.RequestedAttributes ).Select( x => x.Value ).OfType<string>().ToArray();
-                if ( requestedAttributes.Any() )
-                    dst.RequestedAttributes = requestedAttributes;
+                map.Map<IIppRequestMessage, IIppPrinterRequest>(src, dst);
+                dst.OperationAttributes = GetPrinterAttributesOperationAttributes.Create<GetPrinterAttributesOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 var additionalOperationAttributes = src.OperationAttributes.Where( x => !JobAttribute.GetAttributes( src.Version ).Contains( x.Name ) ).ToList();
                 if (additionalOperationAttributes.Any())
                     dst.AdditionalOperationAttributes = additionalOperationAttributes;
@@ -143,7 +135,9 @@ namespace SharpIpp.Mapping.Profiles
                     JobHoldUntilSupported = map.MapFromDicSetNull<JobHoldUntil[]?>( src, PrinterAttribute.JobHoldUntilSupported ),
                     OutputBinDefault = map.MapFromDic<string?>(src, PrinterAttribute.OutputBinDefault),
                     OutputBinSupported = map.MapFromDicSetNull<string[]?>(src, PrinterAttribute.OutputBinSupported),
-                    MediaColDefault = src.ContainsKey(PrinterAttribute.MediaColDefault) ? MediaCol.Create(src[PrinterAttribute.MediaColDefault].FromBegCollection().ToIppDictionary(), map) : null
+                    MediaColDefault = src.ContainsKey(PrinterAttribute.MediaColDefault) ? MediaCol.Create(src[PrinterAttribute.MediaColDefault].FromBegCollection().ToIppDictionary(), map) : null,
+                    PrintColorModeDefault = map.MapFromDic<PrintColorMode?>(src, PrinterAttribute.PrintColorModeDefault),
+                    PrintColorModeSupported = map.MapFromDicSetNull<PrintColorMode[]?>(src, PrinterAttribute.PrintColorModeSupported),
                 } );
 
             mapper.CreateMap<GetPrinterAttributesResponse, IDictionary<string, IppAttribute[]>>( ( src, map ) =>
@@ -271,6 +265,10 @@ namespace SharpIpp.Mapping.Profiles
                         dic.Add(PrinterAttribute.OutputBinSupported, src.OutputBinSupported.Select(x => new IppAttribute(Tag.Keyword, PrinterAttribute.OutputBinSupported, x)).ToArray());
                     if (src.MediaColDefault != null)
                         dic.Add(PrinterAttribute.MediaColDefault, src.MediaColDefault.GetIppAttributes(map).ToBegCollection(PrinterAttribute.MediaColDefault).ToArray());
+                    if(src.PrintColorModeDefault != null)
+                        dic.Add(PrinterAttribute.PrintColorModeDefault, new IppAttribute[] { new IppAttribute(Tag.Keyword, PrinterAttribute.PrintColorModeDefault, map.Map<string>(src.PrintColorModeDefault.Value)) });
+                    if (src.PrintColorModeSupported?.Any() ?? false)
+                        dic.Add(PrinterAttribute.PrintColorModeSupported, src.PrintColorModeSupported.Select(x => new IppAttribute(Tag.Keyword, PrinterAttribute.PrintColorModeSupported, map.Map<string>(x))).ToArray());
                     return dic;
                 } );
         }

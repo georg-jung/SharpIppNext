@@ -2,6 +2,7 @@
 using System.Linq;
 using SharpIpp.Models;
 using SharpIpp.Protocol;
+using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
 namespace SharpIpp.Mapping.Profiles
@@ -13,37 +14,23 @@ namespace SharpIpp.Mapping.Profiles
         {
             mapper.CreateMap<SendUriRequest, IppRequestMessage>((src, map) =>
             {
-                if (src.DocumentUri == null && !src.LastDocument)
+                if (src.OperationAttributes != null && src.OperationAttributes.DocumentUri == null && !src.OperationAttributes.LastDocument)
                 {
-                    throw new ArgumentException($"{nameof(src.DocumentUri)} must be set for non-last document");
+                    throw new ArgumentException($"{nameof(src.OperationAttributes.DocumentUri)} must be set for non-last document");
                 }
 
                 var dst = new IppRequestMessage { IppOperation = IppOperation.SendUri };
                 map.Map<IIppJobRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-                operation.Add(new IppAttribute(Tag.Boolean, JobAttribute.LastDocument, src.LastDocument));
-
-                if (src.DocumentUri != null)
-                {
-                    operation.Add(new IppAttribute(Tag.Uri, JobAttribute.DocumentUri, src.DocumentUri.ToString()));
-                }
-
-                if (src.DocumentAttributes != null)
-                {
-                    map.Map(src.DocumentAttributes, dst);
-                }
-
+                if (src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
                 return dst;
             });
 
             mapper.CreateMap<IIppRequestMessage, SendUriRequest>( ( src, map ) =>
             {
-                var dst = new SendUriRequest { DocumentAttributes = new DocumentAttributes() };
+                var dst = new SendUriRequest();
                 map.Map<IIppRequestMessage, IIppJobRequest>( src, dst );
-                dst.LastDocument = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.LastDocument )?.Value as bool? ?? false;
-                if ( Uri.TryCreate( src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.DocumentUri )?.Value as string, UriKind.RelativeOrAbsolute, out Uri documentUri ) )
-                    dst.DocumentUri = documentUri;
-                map.Map( src, dst.DocumentAttributes );
+                dst.OperationAttributes = SendUriOperationAttributes.Create<SendUriOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
                 return dst;
             } );
 

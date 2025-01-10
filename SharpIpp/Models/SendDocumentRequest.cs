@@ -17,28 +17,8 @@ namespace SharpIpp.Models
     ///     Document Request contains the entire stream of document data for one
     ///     document.
     /// </summary>
-    public class SendDocumentRequest : IIppDocumentSequenceRequest
+    public class SendDocumentRequest : IppRequest<SendDocumentOperationAttributes>, IIppJobRequest
     {
         public Stream? Document { get; set; }
-
-        public DocumentAttributes? DocumentAttributes { get; set; }
-
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
-
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public Uri? JobUrl { get; set; }
-
-        public int? JobId { get; set; }
-
-        public bool LastDocument { get; set; }
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
     }
 }

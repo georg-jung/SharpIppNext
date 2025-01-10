@@ -17,33 +17,12 @@ namespace SharpIpp.Mapping.Profiles
             mapper.CreateMap<IIppJobRequest, IppRequestMessage>((src, dst, map) =>
             {
                 map.Map<IIppRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-
-                if (src.JobUrl != null)
-                {
-                    operation.Add(new IppAttribute(Tag.Uri, JobAttribute.JobUri, src.JobUrl.ToString()));
-                }
-                else if (src.JobId != null)
-                {
-                    operation.Add(new IppAttribute(Tag.Uri, JobAttribute.PrinterUri, src.PrinterUri.ToString()));
-                    operation.Add(new IppAttribute(Tag.Integer, JobAttribute.JobId, src.JobId.Value));
-                }
-                else
-                {
-                    throw new IppRequestException($"JobTarget must have {nameof(GetJobAttributesRequest.JobUrl)} or {nameof(GetJobAttributesRequest.JobId)} set", dst, IppStatusCode.ClientErrorBadRequest );
-                }
-
                 return dst;
             });
 
             mapper.CreateMap<IIppRequestMessage, IIppJobRequest>( ( src, dst, map ) =>
             {
                 map.Map<IIppRequestMessage, IIppRequest>( src, dst );
-                if ( Uri.TryCreate( src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.JobUri )?.Value as string, UriKind.RelativeOrAbsolute, out Uri jobUri ) )
-                    dst.JobUrl = jobUri;
-                if ( Uri.TryCreate( src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.PrinterUri )?.Value as string, UriKind.RelativeOrAbsolute, out Uri printerUri ) )
-                    dst.PrinterUri = printerUri;
-                dst.JobId = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.JobId )?.Value as int?;
                 return dst;
             } );
 

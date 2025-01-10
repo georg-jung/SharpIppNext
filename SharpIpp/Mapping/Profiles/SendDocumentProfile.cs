@@ -3,6 +3,7 @@ using System.Linq;
 using SharpIpp.Exceptions;
 using SharpIpp.Models;
 using SharpIpp.Protocol;
+using SharpIpp.Protocol.Extensions;
 using SharpIpp.Protocol.Models;
 
 namespace SharpIpp.Mapping.Profiles
@@ -14,7 +15,7 @@ namespace SharpIpp.Mapping.Profiles
         {
             mapper.CreateMap<SendDocumentRequest, IppRequestMessage>((src, map) =>
             {
-                if (src.Document == null && !src.LastDocument)
+                if (src.Document == null && !(src.OperationAttributes?.LastDocument ?? false))
                 {
                     throw new ArgumentException($"{nameof(src.Document)} must be set for non-last document");
                 }
@@ -24,14 +25,8 @@ namespace SharpIpp.Mapping.Profiles
                     IppOperation = IppOperation.SendDocument, Document = src.Document,
                 };
                 map.Map<IIppJobRequest, IppRequestMessage>(src, dst);
-                var operation = dst.OperationAttributes;
-                operation.Add(new IppAttribute(Tag.Boolean, "last-document", src.LastDocument));
-
-                if (src.DocumentAttributes != null)
-                {
-                    map.Map(src.DocumentAttributes, dst);
-                }
-
+                if (src.OperationAttributes != null)
+                    dst.OperationAttributes.AddRange(src.OperationAttributes.GetIppAttributes(map));
                 return dst;
             });
 
@@ -39,15 +34,12 @@ namespace SharpIpp.Mapping.Profiles
             {
                 var dst = new SendDocumentRequest
                 {
-                    DocumentAttributes = new DocumentAttributes(),
                     Document = src.Document
                 };
                 map.Map<IIppRequestMessage, IIppJobRequest>( src, dst );
-                var lastDocument = src.OperationAttributes.FirstOrDefault( x => x.Name == JobAttribute.LastDocument )?.Value as bool?;
-                if (!lastDocument.HasValue)
+                dst.OperationAttributes = SendDocumentOperationAttributes.Create<SendDocumentOperationAttributes>(src.OperationAttributes.ToIppDictionary(), map);
+                if (!src.OperationAttributes.Any(x => x.Name == JobAttribute.LastDocument))
                     throw new IppRequestException( "missing last-document", src, IppStatusCode.ClientErrorBadRequest );
-                dst.LastDocument = lastDocument.Value;
-                map.Map( src, dst.DocumentAttributes );
                 return dst;
             } );
 

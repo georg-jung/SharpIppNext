@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using SharpIpp.Protocol.Models;
-
-namespace SharpIpp.Models
+﻿namespace SharpIpp.Models
 {
     /// <summary>
     ///     <a href="https://datatracker.ietf.org/doc/html/rfc2911#section-3.3.5">Hold-Job Operation</a>
@@ -14,22 +9,8 @@ namespace SharpIpp.Models
     ///     attribute allows a client to specify whether to hold the job
     ///     indefinitely or until a specified time period, if supported.
     /// </summary>
-    public class HoldJobRequest : IIppJobRequest
+    public class HoldJobRequest : IppRequest<HoldJobOperationAttributes>, IIppJobRequest
     {
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public Uri? JobUrl { get; set; }
-
-        public int? JobId { get; set; }
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
     }
 }

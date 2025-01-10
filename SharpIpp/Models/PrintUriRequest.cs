@@ -19,24 +19,8 @@ namespace SharpIpp.Models
     ///     object MUST reject the request and return the 'client-error-uri-
     ///     scheme-not-supported' status code.
     /// </summary>
-    public class PrintUriRequest : IIppPrinterRequest
+    public class PrintUriRequest : IppRequest<PrintUriOperationAttributes>, IIppPrinterRequest
     {
-        public Uri DocumentUri { get; set; } = null!;
-
-        public NewJobAttributes? NewJobAttributes { get; set; }
-
-        public DocumentAttributes? DocumentAttributes { get; set; }
-
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
-
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
+        public JobTemplateAttributes? JobTemplateAttributes { get; set; }
     }
 }

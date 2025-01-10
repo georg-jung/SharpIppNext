@@ -65,6 +65,8 @@ namespace SharpIpp.Protocol.Models
         public const string OutputBinDefault = "output-bin-default";
         public const string OutputBinSupported = "output-bin-supported";
         public const string MediaColDefault = "media-col-default";
+        public const string PrintColorModeDefault = "print-color-mode-default";
+        public const string PrintColorModeSupported = "print-color-mode-supported";
 
         public static IEnumerable<string> GetAttributes(IppVersion version)
         {
@@ -129,6 +131,8 @@ namespace SharpIpp.Protocol.Models
             yield return OutputBinDefault;
             yield return OutputBinSupported;
             yield return MediaColDefault;
+            yield return PrintColorModeDefault;
+            yield return PrintColorModeSupported;
         }
     }
 }

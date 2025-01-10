@@ -16,18 +16,8 @@ namespace SharpIpp.Models
     ///     MUST still accept create operations to create new jobs, but MUST
     ///     prevent any jobs from entering the 'processing' state.
     /// </summary>
-    public class PausePrinterRequest : IIppPrinterRequest
+    public class PausePrinterRequest : IppRequest<PausePrinterOperationAttributes>, IIppPrinterRequest
     {
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
 
-        public int RequestId { get; set; } = 1;
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public string? RequestingUserName { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
     }
 }

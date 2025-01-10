@@ -51,9 +51,12 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            JobId = 123,
-            PrinterUri = new Uri( "ipp://127.0.0.1:631/" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                JobId = 123,
+                PrinterUri = new Uri("ipp://127.0.0.1:631/"),
+                RequestingUserName = "test-user"
+            }
         } );
     }
 
@@ -83,9 +86,12 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "ipp://127.0.0.1:631/" ),
-            RequestingUserName = "test-user",
-            NewJobAttributes = new()
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("ipp://127.0.0.1:631/"),
+                RequestingUserName = "test-user"
+            },
+            JobTemplateAttributes = new()
         } );
     }
 
@@ -125,9 +131,12 @@ public class SharpIppServerTests
 		{
 			RequestId = 123,
 			Version = IppVersion.V1_1,
-			PrinterUri = new Uri("ipp://127.0.0.1:631/"),
-			RequestingUserName = "test-user",
-			NewJobAttributes = new() { 
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("ipp://127.0.0.1:631/"),
+                RequestingUserName = "test-user"
+            },
+			JobTemplateAttributes = new() { 
                 JobPriority = 99,
                 JobHoldUntil = JobHoldUntil.DayTime,
                 Copies = 2,
@@ -163,8 +172,11 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
     }
 
@@ -463,9 +475,12 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456
+            }
         } );
     }
 
@@ -494,8 +509,11 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
     }
 
@@ -524,8 +542,11 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
     }
 
@@ -555,9 +576,12 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 234
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 234
+            }
         } );
     }
 
@@ -586,8 +610,11 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
     }
 
@@ -618,11 +645,13 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+            },
             Document = memoryStream,
-            NewJobAttributes = new(),
-            DocumentAttributes = new()
+            JobTemplateAttributes = new()
         } );
     }
 
@@ -653,11 +682,13 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            DocumentUri = uri,
-            NewJobAttributes = new(),
-            DocumentAttributes = new()
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                DocumentUri = uri
+            },
+            JobTemplateAttributes = new()
         } );
     }
 
@@ -686,8 +717,11 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
     }
 
@@ -717,9 +751,12 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 234
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 234
+            }
         } );
     }
 
@@ -749,9 +786,12 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456
+            }
         } );
     }
 
@@ -780,8 +820,11 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
     }
 
@@ -814,11 +857,13 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456,
-            Document = memoryStream,
-            DocumentAttributes = new()
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456
+            },
+            Document = memoryStream
         } );
     }
 
@@ -851,11 +896,13 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456,
-            DocumentUri = uri,
-            DocumentAttributes = new()
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456,
+                DocumentUri = uri
+            }
         } );
     }
 
@@ -886,11 +933,13 @@ public class SharpIppServerTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            },
             Document = memoryStream,
-            NewJobAttributes = new(),
-            DocumentAttributes = new()
+            JobTemplateAttributes = new()
         } );
     }
 
@@ -988,7 +1037,8 @@ public class SharpIppServerTests
             JobUri = "http://127.0.0.1:631/234",
             JobState = JobState.Pending,
             JobStateMessage = "custom state",
-            NumberOfInterveningJobs = 0
+            NumberOfInterveningJobs = 0,
+            JobStateReasons = [JobStateReason.None]
         };
         var rawMessage = new IppResponseMessage
         {
@@ -1004,6 +1054,7 @@ public class SharpIppServerTests
         jobSection.Attributes.Add(new IppAttribute(Tag.Enum, JobAttribute.JobState, (int)JobState.Pending));
         jobSection.Attributes.Add(new IppAttribute(Tag.TextWithoutLanguage, JobAttribute.JobStateMessage, "custom state"));
         jobSection.Attributes.Add(new IppAttribute(Tag.Integer, JobAttribute.TimeAtProcessing, 0));
+        jobSection.Attributes.Add(new IppAttribute(Tag.Keyword, JobAttribute.JobStateReasons, "none"));
         rawMessage.Sections.Add(jobSection);
         // Act
         await server.SendResponseAsync( message, Stream.Null );

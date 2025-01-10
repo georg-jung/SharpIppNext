@@ -16,20 +16,8 @@ namespace SharpIpp.Models
     ///     group is a set of Job object attributes rather than a set of Printer
     ///     object attributes.
     /// </summary>
-    public class GetPrinterAttributesRequest : IIppPrinterRequest
+    public class GetPrinterAttributesRequest : IppRequest<GetPrinterAttributesOperationAttributes>, IIppPrinterRequest
     {
-        public IEnumerable<string>? RequestedAttributes { get; set; }
-
-        public IppVersion Version { get; set; } = IppVersion.V1_1;
-
-        public int RequestId { get; set; } = 1;
-
-        public string? RequestingUserName { get; set; }
-
-        public Uri PrinterUri { get; set; } = null!;
-
-        public IEnumerable<IppAttribute>? AdditionalOperationAttributes { get; set; }
-
-        public IEnumerable<IppAttribute>? AdditionalJobAttributes { get; set; }
+        
     }
 }

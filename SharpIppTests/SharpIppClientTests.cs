@@ -65,8 +65,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new CreateJobOperationAttributes
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -99,9 +102,12 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 234
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 234
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -135,9 +141,12 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 234
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 234
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -171,8 +180,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -205,9 +217,12 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 234
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 234
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -242,8 +257,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            },
             Document = memoryStream
         } );
         // Assert
@@ -278,8 +296,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -313,8 +334,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            },
             Document = memoryStream
         } );
         // Assert
@@ -350,9 +374,12 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            DocumentUri = uri
+            OperationAttributes = new PrintUriOperationAttributes
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                DocumentUri = uri
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -387,9 +414,12 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456,
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456
+            },
             Document = memoryStream
         } );
         // Assert
@@ -427,10 +457,13 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456,
-            DocumentUri = uri
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456,
+                DocumentUri = uri
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -466,9 +499,12 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -502,8 +538,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -536,8 +575,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -570,8 +612,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -604,9 +649,12 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user",
-            JobId = 456
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user",
+                JobId = 456
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -640,8 +688,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         IppRequestMessage rawRequestMessage = new()
@@ -681,8 +732,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new CreateJobOperationAttributes
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         await act.Should().ThrowAsync<HttpRequestException>();
@@ -706,8 +760,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         await act.Should().ThrowAsync<IppResponseException>();
@@ -730,8 +787,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes= new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         await act.Should().ThrowAsync<IppResponseException>();
@@ -749,8 +809,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         await act.Should().ThrowAsync<InvalidCastException>();
@@ -768,8 +831,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( "http://127.0.0.1:631" ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri("http://127.0.0.1:631"),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         await act.Should().ThrowAsync<HttpRequestException>();
@@ -845,8 +911,11 @@ public class SharpIppClientTests
         {
             RequestId = 123,
             Version = IppVersion.V1_1,
-            PrinterUri = new Uri( printerUri ),
-            RequestingUserName = "test-user"
+            OperationAttributes = new()
+            {
+                PrinterUri = new Uri(printerUri),
+                RequestingUserName = "test-user"
+            }
         } );
         // Assert
         messageHandler
