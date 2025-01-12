@@ -92,6 +92,11 @@ namespace SharpIpp.Protocol
                     case SectionTag.JobAttributesTag:
                     case SectionTag.PrinterAttributesTag:
                     case SectionTag.UnsupportedAttributesTag:
+                    case SectionTag.SubscriptionAttributesTag:
+                    case SectionTag.EventNotificationAttributesTag:
+                    case SectionTag.ResourceAttributesTag:
+                    case SectionTag.DocumentAttributesTag:
+                    case SectionTag.SystemAttributesTag:
                         var section = new IppSection { Tag = sectionTag };
                         res.Sections.Add(section);
                         attributes = section.Attributes;
@@ -124,6 +129,24 @@ namespace SharpIpp.Protocol
                         break;
                     case SectionTag.JobAttributesTag:
                         attributes = res.JobAttributes;
+                        break;
+                    case SectionTag.PrinterAttributesTag:
+                        attributes = res.PrinterAttributes;
+                        break;
+                    case SectionTag.SubscriptionAttributesTag:
+                        attributes = res.SubscriptionAttributes;
+                        break;
+                    case SectionTag.EventNotificationAttributesTag:
+                        attributes = res.EventNotificationAttributes;
+                        break;
+                    case SectionTag.ResourceAttributesTag:
+                        attributes = res.ResourceAttributes;
+                        break;
+                    case SectionTag.DocumentAttributesTag:
+                        attributes = res.DocumentAttributes;
+                        break;
+                    case SectionTag.SystemAttributesTag:
+                        attributes = res.SystemAttributes;
                         break;
                     case SectionTag.EndOfAttributesTag:
                         return;
@@ -341,10 +364,25 @@ namespace SharpIpp.Protocol
 
         private void WriteSections(IIppRequestMessage requestMessage, BinaryWriter writer)
         {
-            if (!requestMessage.OperationAttributes.Any() && !requestMessage.OperationAttributes.Any())
+            if (requestMessage.OperationAttributes.Count == 0
+                && requestMessage.JobAttributes.Count == 0
+                && requestMessage.PrinterAttributes.Count == 0
+                && requestMessage.UnsupportedAttributes.Count == 0
+                && requestMessage.SubscriptionAttributes.Count == 0
+                && requestMessage.EventNotificationAttributes.Count == 0
+                && requestMessage.ResourceAttributes.Count == 0
+                && requestMessage.DocumentAttributes.Count == 0
+                && requestMessage.SystemAttributes.Count == 0)
                 return;
-            WriteSection( SectionTag.OperationAttributesTag, requestMessage.OperationAttributes, writer );
-            WriteSection( SectionTag.JobAttributesTag, requestMessage.JobAttributes, writer );
+            WriteSection(SectionTag.OperationAttributesTag, requestMessage.OperationAttributes, writer);
+            WriteSection(SectionTag.JobAttributesTag, requestMessage.JobAttributes, writer);
+            WriteSection(SectionTag.PrinterAttributesTag, requestMessage.PrinterAttributes, writer);
+            WriteSection(SectionTag.UnsupportedAttributesTag, requestMessage.UnsupportedAttributes, writer);
+            WriteSection(SectionTag.SubscriptionAttributesTag, requestMessage.SubscriptionAttributes, writer);
+            WriteSection(SectionTag.EventNotificationAttributesTag, requestMessage.EventNotificationAttributes, writer);
+            WriteSection(SectionTag.ResourceAttributesTag, requestMessage.ResourceAttributes, writer);
+            WriteSection(SectionTag.DocumentAttributesTag, requestMessage.DocumentAttributes, writer);
+            WriteSection(SectionTag.SystemAttributesTag, requestMessage.SystemAttributes, writer);
             //end-of-attributes-tag https://tools.ietf.org/html/rfc8010#section-3.5.1
             writer.Write((byte)SectionTag.EndOfAttributesTag);
         }
@@ -361,10 +399,10 @@ namespace SharpIpp.Protocol
         {
             if (attributes is null)
                 throw new ArgumentNullException( nameof( attributes ) );
-            if (!attributes.Any())
-                return;
             if (writer is null)
                 throw new ArgumentNullException( nameof( writer ) );
+            if (attributes.Count == 0)
+                return;
             //operation-attributes-tag https://tools.ietf.org/html/rfc8010#section-3.5.1
             writer.Write( (byte)sectionTag );
             for (var i = 0; i < attributes.Count; i++)

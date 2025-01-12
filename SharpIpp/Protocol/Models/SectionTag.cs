@@ -34,5 +34,30 @@
         ///     unsupported-attributes-tag
         /// </summary>
         UnsupportedAttributesTag = 0x05,
+
+        /// <summary>
+        /// subscription-attributes-tag
+        /// </summary>
+        SubscriptionAttributesTag = 0x06,
+
+        /// <summary>
+        /// event-notification-attributes-tag
+        /// </summary>
+        EventNotificationAttributesTag = 0x07,
+
+        /// <summary>
+        /// resource-attributes-tag
+        /// </summary>
+        ResourceAttributesTag = 0x08,
+
+        /// <summary>
+        /// document-attributes-tag
+        /// </summary>
+        DocumentAttributesTag = 0x09,
+
+        /// <summary>
+        /// system-attributes-tag
+        /// </summary>
+        SystemAttributesTag = 0x0A
     }
 }
