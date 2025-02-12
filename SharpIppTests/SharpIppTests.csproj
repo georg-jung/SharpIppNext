@@ -29,4 +29,9 @@
     <ProjectReference Include="..\SharpIpp\SharpIpp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="RawIppResponses/*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
