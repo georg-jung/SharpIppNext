@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -248,10 +248,10 @@ namespace SharpIpp.Protocol
                 Tag.DateTime => ReadDateTimeOffset(stream),
                 Tag.Resolution => ReadResolution(stream),
                 Tag.RangeOfInteger => ReadRange(stream),
-                Tag.BegCollection => ReadNoValue(stream),
+                Tag.BegCollection => ReadString(stream), // BegCollection has an optional string value.
                 Tag.TextWithLanguage => ReadStringWithLanguage(stream),
                 Tag.NameWithLanguage => ReadStringWithLanguage(stream),
-                Tag.EndCollection => ReadNoValue(stream),
+                Tag.EndCollection => ReadString(stream), // EndCollection has an optional string value.
                 Tag.TextWithoutLanguage => ReadString(stream),
                 Tag.NameWithoutLanguage => ReadString(stream),
                 Tag.Keyword => ReadString(stream),
@@ -260,7 +260,7 @@ namespace SharpIpp.Protocol
                 Tag.Charset => ReadString(stream),
                 Tag.NaturalLanguage => ReadString(stream),
                 Tag.MimeMediaType => ReadString(stream),
-                Tag.MemberAttrName => ReadString(stream),
+                Tag.MemberAttrName => ReadString(stream), // MemberNameAttr has no name but it's value is the name for the following attributes.
                 Tag.OctetStringUnassigned38 => ReadString(stream),
                 Tag.OctetStringUnassigned39 => ReadString(stream),
                 Tag.OctetStringUnassigned3A => ReadString(stream),
@@ -309,6 +309,27 @@ namespace SharpIpp.Protocol
             };
         }
 
+        public IppCollection ReadCollection(BinaryReader stream, string name)
+        {
+            var begValue = ReadValue(stream, Tag.BegCollection);
+            var attributes = new List<IppAttribute>();
+            IppAttribute? prevAttribute = null;
+            var tag = (Tag)stream.ReadByte();
+            while (true)
+            {
+                prevAttribute = ReadAttribute(tag, stream, prevAttribute);
+                if (prevAttribute.Tag == Tag.EndCollection)
+                {
+                    break;
+                }
+
+                attributes.Add(prevAttribute);
+                tag = (Tag)stream.ReadByte();
+            }
+
+            return new IppCollection(new(Tag.BegCollection, name, begValue), prevAttribute, attributes);
+        }
+
         public IppAttribute ReadAttribute(Tag tag, BinaryReader stream, IppAttribute? prevAttribute)
         {
             if (stream is null)
@@ -316,7 +337,8 @@ namespace SharpIpp.Protocol
             var len = stream.ReadInt16BigEndian();
             var name = Encoding.ASCII.GetString(stream.ReadBytes(len));
             var normalizedName = GetNormalizedName(tag, name, prevAttribute);
-            var value = ReadValue( stream, tag );
+
+            var value = tag == Tag.BegCollection ? ReadCollection(stream, normalizedName) : ReadValue(stream, tag);
             var attribute = new IppAttribute(tag, normalizedName, value);
             return attribute;
         }
@@ -325,25 +347,26 @@ namespace SharpIpp.Protocol
         {
             if (!string.IsNullOrEmpty(name))
                 return name;
-            switch (tag)
+            
+            if (tag == Tag.EndCollection || tag == Tag.MemberAttrName)
             {
-                case Tag.BegCollection:
-                case Tag.MemberAttrName:
-                case Tag.EndCollection:
-                    return string.Empty;
+                // EndCollection can optionally have a name. That would be handled above.
+                return string.Empty;
             }
-            if(prevAttribute != null)
+
+            if (prevAttribute?.Name is string previousName && !string.IsNullOrEmpty(previousName))
             {
-                switch (prevAttribute.Tag)
-                {
-                    case Tag.BegCollection:
-                    case Tag.MemberAttrName:
-                    case Tag.EndCollection:
-                        return string.Empty;
-                }
-                if (!string.IsNullOrEmpty(prevAttribute.Name))
-                    return prevAttribute.Name;
+                return previousName;
             }
+
+            if (prevAttribute is not null
+                && prevAttribute.Tag == Tag.MemberAttrName
+                && prevAttribute.Value is string nameFromMemberAttrName
+                && !string.IsNullOrEmpty(nameFromMemberAttrName))
+            {
+                return nameFromMemberAttrName;
+            }
+
             throw new ArgumentException("0 length attribute name found not in a 1setOf");
         }
 
