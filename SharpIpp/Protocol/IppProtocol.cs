@@ -337,12 +337,15 @@ namespace SharpIpp.Protocol
                 switch (prevAttribute.Tag)
                 {
                     case Tag.BegCollection:
-                    case Tag.MemberAttrName:
                     case Tag.EndCollection:
-                        return string.Empty;
+                        break;
+                    case Tag.MemberAttrName when prevAttribute.Value is string memberAttrName:
+                        return memberAttrName;
+                    default:
+                        if (!string.IsNullOrEmpty(prevAttribute.Name))
+                            return prevAttribute.Name;
+                        break;
                 }
-                if (!string.IsNullOrEmpty(prevAttribute.Name))
-                    return prevAttribute.Name;
             }
             throw new ArgumentException("0 length attribute name found not in a 1setOf");
         }
