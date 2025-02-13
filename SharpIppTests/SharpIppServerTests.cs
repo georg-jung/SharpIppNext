@@ -1053,7 +1053,7 @@ public class SharpIppServerTests
         jobSection.Attributes.Add(new IppAttribute(Tag.Integer, JobAttribute.JobId, 234));
         jobSection.Attributes.Add(new IppAttribute(Tag.Enum, JobAttribute.JobState, (int)JobState.Pending));
         jobSection.Attributes.Add(new IppAttribute(Tag.TextWithoutLanguage, JobAttribute.JobStateMessage, "custom state"));
-        jobSection.Attributes.Add(new IppAttribute(Tag.Integer, JobAttribute.TimeAtProcessing, 0));
+        jobSection.Attributes.Add(new IppAttribute(Tag.Integer, JobAttribute.NumberOfInterveningJobs, 0));
         jobSection.Attributes.Add(new IppAttribute(Tag.Keyword, JobAttribute.JobStateReasons, "none"));
         rawMessage.Sections.Add(jobSection);
         // Act

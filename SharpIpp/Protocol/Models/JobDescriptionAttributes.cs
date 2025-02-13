@@ -38,9 +38,19 @@ namespace SharpIpp.Protocol.Models
         public string? JobPrinterUri { get; set; }
 
         /// <summary>
-        /// https://tools.ietf.org/html/rfc2911#section-4.3.4
+        ///     This REQUIRED attribute is the name of the job.  It is a name that is
+        ///     more user friendly than the "job-uri" attribute value.  It does not
+        ///     need to be unique between Jobs.  The Job's "job-name" attribute is
+        ///     set to the value supplied by the client in the "job-name" operation
+        ///     attribute in the create request (see Section 3.2.1.1).   If, however,
+        ///     the "job-name" operation attribute is not supplied by the client in
+        ///     the create request, the Printer object, on creation of the Job, MUST
+        ///     generate a name.
+        ///     https://tools.ietf.org/html/rfc2911#section-4.3.5
         /// </summary>
-        public string? JobMoreInfo { get; set; }
+        /// <example>job63</example>
+        /// <code>job-name</code>
+        public string? JobName { get; set; }
 
         /// <summary>
         ///     This REQUIRED attribute contains the name of the end user that
@@ -57,153 +67,45 @@ namespace SharpIpp.Protocol.Models
         public string? JobOriginatingUserName { get; set; }
 
         /// <summary>
-        ///     if <see cref="JobOriginatingUserName" /> had a language, this property stores it
+        ///     This attribute specifies the total number of octets processed in K
+        ///     octets, i.e., in units of 1024 octets so far.  The value MUST be
+        ///     rounded up, so that a job between 1 and 1024 octets inclusive MUST be
+        ///     indicated as being 1, 1025 to 2048 inclusive MUST be 2, etc.
+        ///     For implementations where multiple copies are produced by the
+        ///     interpreter with only a single pass over the data, the final value
+        ///     MUST be equal to the value of the "job-k-octets" attribute.  For
+        ///     implementations where multiple copies are produced by the interpreter
+        ///     by processing the data for each copy, the final value MUST be a
+        ///     multiple of the value of the "job-k-octets" attribute.
+        ///     https://tools.ietf.org/html/rfc2911#section-4.3.18.1
         /// </summary>
-        public string? JobOriginatingUserNameLanguage { get; set; }
+        /// <example>26</example>
+        /// <code>job-k-octets-processed</code>
+        public int? JobKOctetsProcessed { get; set; }
 
         /// <summary>
-        ///     This attribute determines which job start/end sheet(s), if any, MUST
-        ///     be printed with a job.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.3
+        ///     This attribute specifies the total size in number of impressions of
+        ///     the document(s) being submitted.
+        ///     As with "job-k-octets", this value MUST NOT include the
+        ///     multiplicative factors contributed by the number of copies specified
+        ///     by the "copies" attribute, independent of whether the device can
+        ///     process multiple copies without making multiple passes over the job
+        ///     or document data and independent of whether the output is collated or
+        ///     not.  Thus the value is independent of the implementation and
+        ///     reflects the size of the document(s) measured in impressions
+        ///     independent of the number of copies.
+        ///     As with "job-k-octets", this value MUST also not include the
+        ///     multiplicative factor due to a copies instruction embedded in the
+        ///     document data.  If the document data actually includes replications
+        ///     of the document data, this value will include such replication.  In
+        ///     other words, this value is always the number of impressions in the
+        ///     source document data, rather than a measure of the number of
+        ///     impressions to be produced by the job.
+        ///     https://tools.ietf.org/html/rfc2911#section-4.3.17.2
         /// </summary>
-        /// <example>none</example>
-        /// <code>job-sheets</code>
-        public JobSheets? JobSheets { get; set; }
-
-        /// <summary>
-        ///     This attribute specifies the number of copies to be printed.
-        ///     On many devices the supported number of collated copies will be
-        ///     limited by the number of physical output bins on the device, and may
-        ///     be different from the number of uncollated copies which can be
-        ///     supported.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.5
-        /// </summary>
-        /// <example>1</example>
-        /// <code>copies</code>
-        public int? Copies { get; set; }
-
-        /// <summary>
-        ///     This attribute is relevant only if a job consists of two or more
-        ///     documents. This attribute MUST be supported with at least one value
-        ///     if the Printer supports multiple documents per job (see sections
-        ///     3.2.4 and 3.3.1).  The attribute controls finishing operations and
-        ///     the placement of one or more print-stream pages into impressions and
-        ///     onto media sheets.  When the value of the "copies" attribute exceeds
-        ///     1, it also controls the order in which the copies that result from
-        ///     processing the documents are produced. For the purposes of this
-        ///     explanations, if "a" represents an instance of document data, then
-        ///     the result of processing the data in document "a" is a sequence of
-        ///     media sheets represented by "a(*)".
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.4
-        /// </summary>
-        /// <example>separate-documents-uncollated-copies</example>
-        /// <code>multiple-document-handling</code>
-        public MultipleDocumentHandling? MultipleDocumentHandling { get; set; }
-
-        /// <summary>
-        ///     This attribute specifies the print quality that the Printer uses for
-        ///     the Job.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.13
-        /// </summary>
-        /// <example>4</example>
-        /// <code>print-quality</code>
-        public PrintQuality? PrintQuality { get; set; }
-
-        /// <summary>
-        ///     This attribute identifies the resolution that Printer uses for the
-        ///     Job.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.12
-        /// </summary>
-        /// <example>600x600 (dpi)</example>
-        /// <code>printer-resolution</code>
-        public Resolution? PrinterResolution { get; set; }
-
-        /// <summary>
-        ///     This attribute specifies how print-stream pages are to be imposed
-        ///     upon the sides of an instance of a selected medium, i.e., an
-        ///     impression.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.8
-        /// </summary>
-        /// <example>one-sided</example>
-        /// <code>sides</code>
-        public Sides? Sides { get; set; }
-
-        /// <summary>
-        ///     This attribute identifies the medium that the Printer uses for all
-        ///     impressions of the Job.
-        ///     The values for "media" include medium-names, medium-sizes, input-
-        ///     trays and electronic forms so that one attribute specifies the media.
-        ///     If a Printer object supports a medium name as a value of this
-        ///     attribute, such a medium name implicitly selects an input-tray that
-        ///     contains the specified medium.  If a Printer object supports a medium
-        ///     size as a value of this attribute, such a medium size implicitly
-        ///     selects a medium name that in turn implicitly selects an input-tray
-        ///     that contains the medium with the specified size.  If a Printer
-        ///     object supports an input-tray as the value of this attribute, such an
-        ///     input-tray implicitly selects the medium that is in that input-tray
-        ///     at the time the job prints.  This case includes manual-feed input-
-        ///     trays.  If a Printer object supports an electronic form as the value
-        ///     of this attribute, such an electronic form implicitly selects a
-        ///     medium-name that in turn implicitly selects an input-tray that
-        ///     contains the medium specified by the electronic form.  The electronic
-        ///     form also implicitly selects an image that the Printer MUST merge
-        ///     with the document data as its prints each page.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.11
-        /// </summary>
-        /// <example>iso_a4_210x297mm</example>
-        /// <code>media</code>
-        public string? Media { get; set; }
-
-        /// <summary>
-        ///     This attribute specifies the number of print-stream pages to impose
-        ///     upon a single side of an instance of a selected medium.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.9
-        /// </summary>
-        /// <example>1</example>
-        /// <code>number-up</code>
-        public int? NumberUp { get; set; }
-
-        /// <summary>
-        ///     This attribute indicates the desired orientation for printed print-
-        ///     stream pages; it does not describe the orientation of the client-
-        ///     supplied print-stream pages.
-        ///     For some document formats (such as 'application/postscript'), the
-        ///     desired orientation of the print-stream pages is specified within the
-        ///     document data.  This information is generated by a device driver
-        ///     prior to the submission of the print job.  Other document formats
-        ///     (such as 'text/plain') do not include the notion of desired
-        ///     orientation within the document data.  In the latter case it is
-        ///     possible for the Printer object to bind the desired orientation to
-        ///     the document data after it has been submitted.  It is expected that a
-        ///     Printer object would only support "orientations-requested" for some
-        ///     document formats (e.g., 'text/plain' or 'text/html') but not others
-        ///     (e.g., 'application/postscript').  This is no different than any
-        ///     other Job Template attribute since section 4.2, item 1, points out
-        ///     that a Printer object may support or not support any Job Template
-        ///     attribute based on the document format supplied by the client.
-        ///     However, a special mention is made here since it is very likely that
-        ///     a Printer object will support "orientation-requested" for only a
-        ///     subset of the supported document formats.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.10
-        /// </summary>
-        /// <example>3</example>
-        /// <code>orientation-requested</code>
-        public Orientation? OrientationRequested { get; set; }
-
-        /// <summary>
-        ///     This attribute identifies the finishing operations that the Printer
-        ///     uses for each copy of each printed document in the Job. For Jobs with
-        ///     multiple documents, the "multiple-document-handling" attribute
-        ///     determines what constitutes a "copy" for purposes of finishing.
-        ///     https://tools.ietf.org/html/rfc2911#section-4.2.6
-        /// </summary>
-        /// <example>3</example>
-        /// <code>finishings</code>
-        public Finishings? Finishings { get; set; }
-
-        
-
-        
+        /// <example>no value</example>
+        /// <code>job-impressions</code>
+        public int? JobImpressions { get; set; }
 
         /// <summary>
         ///     This job attribute specifies the number of impressions completed for
@@ -215,7 +117,30 @@ namespace SharpIpp.Protocol.Models
         /// <code>job-impressions-completed</code>
         public int? JobImpressionsCompleted { get; set; }
 
-        
+        /// <summary>
+        ///     This attribute specifies the total number of media sheets to be
+        ///     produced for this job.
+        ///     Unlike the "job-k-octets" and the "job-impressions" attributes, this
+        ///     value MUST include the multiplicative factors contributed by the
+        ///     number of copies specified by the "copies" attribute and a 'number of
+        ///     copies' instruction embedded in the document data, if any.  This
+        ///     difference allows the system administrator to control the lower and
+        ///     upper bounds of both (1) the size of the document(s) with "job-k-
+        ///     octets-supported" and "job-impressions-supported" and (2) the size of
+        ///     the job with "job-media-sheets-supported".
+        ///     https://tools.ietf.org/html/rfc2911#section-4.3.17.3
+        /// </summary>
+        /// <example>no value</example>
+        /// <code>job-media-sheets</code>
+        public int? JobMediaSheets { get; set; }
+
+        public string? JobMoreInfo { get; set; }
+
+        public int? NumberOfDocuments { get; set; }
+
+        public int? NumberOfInterveningJobs { get; set; }
+
+        public string? OutputDeviceAssigned { get; set; }
 
         /// <summary>
         ///     This job attribute specifies the media-sheets completed marking and
@@ -330,5 +255,48 @@ namespace SharpIpp.Protocol.Models
         /// <example>197775</example>
         /// <code>job-printer-up-time</code>
         public int? JobPrinterUpTime { get; set; }
+
+        /// <summary>
+        /// This attribute specifies the total size of the document(s) in K
+        /// octets, i.e., in units of 1024 octets requested to be processed in
+        /// the job.The value MUST be rounded up, so that a job between 1 and
+        /// 1024 octets MUST be indicated as being 1, 1025 to 2048 MUST be 2,
+        /// etc.
+        /// https://tools.ietf.org/html/rfc2911#section-4.3.17.1
+        /// </summary>
+        public int? JobKOctets { get; set; }
+
+        /// <summary>
+        /// This attribute specifies additional detailed and technical
+        /// information about the job.The Printer NEED NOT localize the
+        /// message(s), since they are intended for use by the system
+        /// administrator or other experienced technical persons.  Localization
+        /// might obscure the technical meaning of such messages.Clients MUST
+        /// NOT attempt to parse the value of this attribute.
+        /// https://datatracker.ietf.org/doc/html/rfc2911#section-4.3.10
+        /// </summary>
+        public string[]? JobDetailedStatusMessages { get; set; }
+
+        /// <summary>
+        /// This attribute provides additional information about each document
+        /// access error for this job encountered by the Printer after it
+        /// returned a response to the Print-URI or Send-URI operation and
+        /// subsequently attempted to access document(s) supplied in the Print-
+        /// URI or Send-URI operation.For errors in the protocol that is
+        /// identified by the URI scheme in the "document-uri" operation
+        /// attribute, such as 'http:' or 'ftp:', the error code is returned in
+        /// parentheses, followed by the URI.
+        /// https://datatracker.ietf.org/doc/html/rfc2911#section-4.3.11
+        /// </summary>
+        public string[]? JobDocumentAccessErrors { get; set; }
+
+        /// <summary>
+        /// This attribute provides a message from an operator, system
+        /// administrator or "intelligent" process to indicate to the end user
+        /// the reasons for modification or other management action taken on a
+        /// job.
+        /// https://datatracker.ietf.org/doc/html/rfc2911#section-4.3.16
+        /// </summary>
+        public string? JobMessageFromOperator { get; set; }
     }
 }
