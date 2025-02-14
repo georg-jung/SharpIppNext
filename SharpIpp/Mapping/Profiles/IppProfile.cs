@@ -15,9 +15,6 @@ namespace SharpIpp.Mapping.Profiles
             {
                 dst.Version = src.Version;
                 dst.RequestId = src.RequestId;
-                var operation = dst.OperationAttributes;
-                operation.Add(new IppAttribute(Tag.Charset, JobAttribute.AttributesCharset, "utf-8"));
-                operation.Add(new IppAttribute(Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en"));
                 return dst;
             });
 

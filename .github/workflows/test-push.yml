@@ -1,9 +1,7 @@
-name: Test commit
+name: Test push
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
 
 jobs:
@@ -23,7 +21,8 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=\"opencover,lcov\"
     - name: Publish coverage report to coveralls.io   
-      uses: coverallsapp/github-action@master   
+      uses: coverallsapp/github-action@master
+      continue-on-error: true
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }} 
         path-to-lcov: SharpIppTests/TestResults/coverage.info 

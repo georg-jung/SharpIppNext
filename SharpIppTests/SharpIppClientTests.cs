@@ -926,4 +926,17 @@ public class SharpIppClientTests
                 ItExpr.Is<HttpRequestMessage>(x => x.VerifyAssertionScope(_ => x.RequestUri.Should().BeEquivalentTo(new Uri(expected), "" ))),
                 ItExpr.IsAny<CancellationToken>() );
     }
+
+    [DataTestMethod]
+    [DataRow("RawIppResponses/GetPrinterAttributes_Canon_MX490_series_low_supply.bin")]
+    [DataRow("RawIppResponses/GetPrinterAttributes_HP_Color_LaserJet_MFP_M476dn.bin")]
+    public async Task Construct_ReadBinFileWithGetPrinterAttributes_ShouldBeMapped(string path)
+    {
+        var protocol = new IppProtocol();
+        await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        var ippResponse = await protocol.ReadIppResponseAsync(stream);
+        using SharpIppClient client = new(new HttpClient(), protocol);
+        var mapped = client.Construct<GetPrinterAttributesResponse>(ippResponse);
+        Assert.IsNotNull(mapped);
+    }
 }

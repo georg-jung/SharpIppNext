@@ -76,6 +76,8 @@ namespace SharpIpp.Protocol
         private void ReadSections(BinaryReader reader, IIppResponseMessage res)
         {
             IppAttribute? prevAttribute = null;
+            Stack<IppAttribute> prevBegCollectionAttributes = new();
+            IppAttribute? prevBegCollectionAttribute = new();
             List<IppAttribute>? attributes = null;
 
             do
@@ -104,7 +106,16 @@ namespace SharpIpp.Protocol
                     default:
                         if (attributes is null)
                             throw new ArgumentException( $"Section start tag not found in stream. Expected < 0x06. Actual: {data}" );
-                        var attribute = ReadAttribute((Tag)data, reader, prevAttribute);
+                        var attribute = ReadAttribute((Tag)data, reader, prevAttribute, prevBegCollectionAttribute);
+                        switch(attribute.Tag)
+                        {
+                            case Tag.BegCollection:
+                                prevBegCollectionAttributes.Push(attribute);
+                                break;
+                            case Tag.EndCollection:
+                                prevBegCollectionAttribute = prevBegCollectionAttributes.Pop();
+                                break;
+                        }
                         prevAttribute = attribute;
                         attributes.Add(attribute);
                         break;
@@ -116,6 +127,8 @@ namespace SharpIpp.Protocol
         private void ReadSections( BinaryReader reader, IIppRequestMessage res )
         {
             IppAttribute? prevAttribute = null;
+            Stack<IppAttribute> prevBegCollectionAttributes = new();
+            IppAttribute? prevBegCollectionAttribute = new();
             List<IppAttribute>? attributes = null;
             do
             {
@@ -156,7 +169,16 @@ namespace SharpIpp.Protocol
                             reader.BaseStream.Position--;
                             return;
                         }
-                        var attribute = ReadAttribute( (Tag)data, reader, prevAttribute );
+                        var attribute = ReadAttribute((Tag)data, reader, prevAttribute, prevBegCollectionAttribute);
+                        switch (attribute.Tag)
+                        {
+                            case Tag.BegCollection:
+                                prevBegCollectionAttributes.Push(attribute);
+                                break;
+                            case Tag.EndCollection:
+                                prevBegCollectionAttribute = prevBegCollectionAttributes.Pop();
+                                break;
+                        }
                         prevAttribute = attribute;
                         attributes.Add( attribute );
                         break;
@@ -309,25 +331,24 @@ namespace SharpIpp.Protocol
             };
         }
 
-        public IppAttribute ReadAttribute(Tag tag, BinaryReader stream, IppAttribute? prevAttribute)
+        public IppAttribute ReadAttribute(Tag tag, BinaryReader stream, IppAttribute? prevAttribute, IppAttribute? prevBegCollectionAttribute)
         {
             if (stream is null)
                 throw new ArgumentNullException( nameof( stream ) );
             var len = stream.ReadInt16BigEndian();
             var name = Encoding.ASCII.GetString(stream.ReadBytes(len));
-            var normalizedName = GetNormalizedName(tag, name, prevAttribute);
+            var normalizedName = GetNormalizedName(tag, name, prevAttribute, prevBegCollectionAttribute);
             var value = ReadValue( stream, tag );
             var attribute = new IppAttribute(tag, normalizedName, value);
             return attribute;
         }
 
-        private string GetNormalizedName(Tag tag, string name, IppAttribute? prevAttribute)
+        private string GetNormalizedName(Tag tag, string name, IppAttribute? prevAttribute, IppAttribute? prevBegCollectionAttribute)
         {
             if (!string.IsNullOrEmpty(name))
                 return name;
             switch (tag)
             {
-                case Tag.BegCollection:
                 case Tag.MemberAttrName:
                 case Tag.EndCollection:
                     return string.Empty;
@@ -337,12 +358,18 @@ namespace SharpIpp.Protocol
                 switch (prevAttribute.Tag)
                 {
                     case Tag.BegCollection:
-                    case Tag.MemberAttrName:
+                        break;
                     case Tag.EndCollection:
-                        return string.Empty;
+                        if (prevBegCollectionAttribute != null && !string.IsNullOrEmpty(prevBegCollectionAttribute.Name))
+                            return prevBegCollectionAttribute.Name;
+                        break;
+                    case Tag.MemberAttrName when prevAttribute.Value is string memberAttrName:
+                        return memberAttrName;
+                    default:
+                        if (!string.IsNullOrEmpty(prevAttribute.Name))
+                            return prevAttribute.Name;
+                        break;
                 }
-                if (!string.IsNullOrEmpty(prevAttribute.Name))
-                    return prevAttribute.Name;
             }
             throw new ArgumentException("0 length attribute name found not in a 1setOf");
         }
