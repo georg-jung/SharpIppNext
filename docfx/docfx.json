@@ -33,7 +33,8 @@
       "_appTitle": "SharpIppNext",
       "_appFooter": "© Copyright Daniel Klecha",
       "_enableSearch": true,
-      "pdf": false
+      "pdf": false,
+	    "_disableContribution": true
     }
   }
 }
