@@ -820,7 +820,7 @@ public class IppProtocolTests
             0x6F, 0x6E, 0x73, 0x2D, 0x73, 0x75, 0x70, 0x70, 0x6F, 0x72, 0x74, 0x65, 0x64, 0x00, 0x03, 0x31, 0x2E, 0x31 } );
         using BinaryReader binaryReader = new( memoryStream );
         // Act
-        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, null );
+        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, null, null );
         // Assert
         act.Should().NotThrow().Which.Should().BeEquivalentTo( new IppAttribute( Tag.Keyword, PrinterAttribute.IppVersionsSupported, new IppVersion( 1, 1 ).ToString() ) );
     }
@@ -834,7 +834,7 @@ public class IppProtocolTests
             0x2D, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00, 0x00 });
         using BinaryReader binaryReader = new(memoryStream);
         // Act
-        Func<IppAttribute> act = () => protocol.ReadAttribute(Tag.BegCollection, binaryReader, null);
+        Func<IppAttribute> act = () => protocol.ReadAttribute(Tag.BegCollection, binaryReader, null, null);
         // Assert
         act.Should().NotThrow().Which.Should().BeEquivalentTo(new IppAttribute(Tag.BegCollection, PrinterAttribute.MediaColDefault, NoValue.Instance));
     }
@@ -848,7 +848,7 @@ public class IppProtocolTests
         using BinaryReader binaryReader = new( memoryStream );
         var previousAttribute = new IppAttribute( Tag.Keyword, PrinterAttribute.IppVersionsSupported, new IppVersion( 1, 0 ).ToString() );
         // Act
-        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, previousAttribute );
+        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, previousAttribute, null);
         // Assert
         act.Should().NotThrow().Which.Should().BeEquivalentTo( new IppAttribute( Tag.Keyword, PrinterAttribute.IppVersionsSupported, new IppVersion( 1, 1 ).ToString() ) );
     }
@@ -861,7 +861,7 @@ public class IppProtocolTests
         using MemoryStream memoryStream = new( new byte[] { 0x00, 0x00, 0x00, 0x03, 0x31, 0x2E, 0x31 } );
         using BinaryReader binaryReader = new( memoryStream );
         // Act
-        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, null );
+        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, binaryReader, null, null);
         // Assert
         act.Should().Throw<ArgumentException>();
     }
@@ -899,7 +899,7 @@ public class IppProtocolTests
         var protocol = new IppProtocol();
         // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, null, null );
+        Func<IppAttribute> act = () => protocol.ReadAttribute( Tag.Keyword, null, null, null );
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         // Assert
         act.Should().Throw<ArgumentNullException>();
