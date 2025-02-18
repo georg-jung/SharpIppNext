@@ -21,9 +21,16 @@ The fastest way of getting started using `SharpIppNext` is to install the NuGet 
 dotnet add package SharpIppNext
 ```
 
+There is also strong-typed version.
+
+```csharp
+dotnet add package SharpIppNext.StrongName
+```
+
 ## Getting started
 
-- Check [Wiki](https://github.com/danielklecha/SharpIppNext/wiki). 
+- [Documentation](https://danielklecha.github.io/SharpIppNext/).
+- [Wiki](https://github.com/danielklecha/SharpIppNext/wiki).
 - Example of the IPP client is included in solution
 - Example of the IPP server is avaliable in [SharpIppNextServer repository](https://github.com/danielklecha/SharpIppNextServer).
 
