@@ -33,6 +33,7 @@ namespace SharpIpp.Mapping.Profiles
             mapper.CreateIppMap<string, IppVersion>( ( src, map ) => new IppVersion( src ) );
             mapper.CreateIppMap<NoValue, int>((src, map) => 0);
             mapper.CreateIppMap<NoValue, int?>( ( src, map ) => null );
+            mapper.CreateIppMap<NoValue, bool>((src, map) => false);
             mapper.CreateIppMap<NoValue, bool?>((src, map) => null);
             mapper.CreateIppMap<NoValue, JobState>( ( src, jobs) => 0);
 
