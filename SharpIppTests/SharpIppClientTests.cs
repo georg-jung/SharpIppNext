@@ -939,4 +939,28 @@ public class SharpIppClientTests
         var mapped = client.Construct<GetPrinterAttributesResponse>(ippResponse);
         Assert.IsNotNull(mapped);
     }
+
+    [DataTestMethod]
+    [DataRow("RawIppResponses/PrintJob_HP_Color_LaserJet_MFP_M476dn.bin")]
+    public async Task Construct_ReadBinFileWithPrintJob_ShouldBeMapped(string path)
+    {
+        var protocol = new IppProtocol();
+        await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        var ippResponse = await protocol.ReadIppResponseAsync(stream);
+        using SharpIppClient client = new(new HttpClient(), protocol);
+        var mapped = client.Construct<PrintJobResponse>(ippResponse);
+        Assert.IsNotNull(mapped);
+    }
+
+    [DataTestMethod]
+    [DataRow("RawIppResponses/GetJobAttributes_HP_Color_LaserJet_MFP_M476dn.bin")]
+    public async Task Construct_ReadBinFileWithGetJobAttributes_ShouldBeMapped(string path)
+    {
+        var protocol = new IppProtocol();
+        await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        var ippResponse = await protocol.ReadIppResponseAsync(stream);
+        using SharpIppClient client = new(new HttpClient(), protocol);
+        var mapped = client.Construct<GetJobAttributesResponse>(ippResponse);
+        Assert.IsNotNull(mapped);
+    }
 }
