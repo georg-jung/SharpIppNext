@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SharpIpp.Protocol.Extensions
 {
@@ -6,22 +7,22 @@ namespace SharpIpp.Protocol.Extensions
     {
         public static short ReadInt16BigEndian(this BinaryReader reader)
         {
-            return Bytes.Reverse(reader.ReadInt16());
+            var value = reader.ReadInt16();
+
+            if (BitConverter.IsLittleEndian)
+                value = Bytes.Reverse(value);
+
+            return value;
         }
 
         public static int ReadInt32BigEndian(this BinaryReader reader)
         {
-            return Bytes.Reverse(reader.ReadInt32());
-        }
+            var value = reader.ReadInt32();
 
-        public static short ReadInt16BigEndianAsync( this BinaryReader reader )
-        {
-            return Bytes.Reverse( reader.ReadInt16() );
-        }
+            if (BitConverter.IsLittleEndian)
+                value = Bytes.Reverse(value);
 
-        public static int ReadInt32BigEndianAsync( this BinaryReader reader )
-        {
-            return Bytes.Reverse( reader.ReadInt32() );
+            return value;
         }
     }
 }
