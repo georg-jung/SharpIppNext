@@ -541,7 +541,8 @@ public class SharpIppClientTests
             OperationAttributes = new()
             {
                 PrinterUri = new Uri("http://127.0.0.1:631"),
-                RequestingUserName = "test-user"
+                RequestingUserName = "test-user",
+                MyJobs = true
             }
         } );
         // Assert
@@ -556,7 +557,8 @@ public class SharpIppClientTests
             new IppAttribute( Tag.Charset, JobAttribute.AttributesCharset, "utf-8" ),
             new IppAttribute( Tag.NaturalLanguage, JobAttribute.AttributesNaturalLanguage, "en" ),
             new IppAttribute( Tag.NameWithoutLanguage, JobAttribute.RequestingUserName, "test-user" ),
-            new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" )
+            new IppAttribute( Tag.Uri, JobAttribute.PrinterUri, "http://127.0.0.1:631/" ),
+            new IppAttribute( Tag.Boolean, JobAttribute.MyJobs, true )
         } );
         protocol.Verify( x => x.WriteIppRequestAsync(
             It.Is<IppRequestMessage>( x => x.VerifyAssertionScope( _ => x.Should().BeEquivalentTo( rawRequestMessage, "" ) ) ),

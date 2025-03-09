@@ -56,6 +56,6 @@ public class GetJobsOperationAttributes : GetJobAttributesOperationAttributes
         if (WhichJobs.HasValue)
             yield return new IppAttribute(Tag.Keyword, JobAttribute.WhichJobs, mapper.Map<string>(WhichJobs.Value));
         if (MyJobs.HasValue)
-            yield return new IppAttribute(Tag.Keyword, JobAttribute.MyJobs, mapper.Map<string>(MyJobs.Value));
+            yield return new IppAttribute(Tag.Boolean, JobAttribute.MyJobs, MyJobs.Value);
     }
 }
