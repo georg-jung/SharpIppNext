@@ -176,10 +176,11 @@ public partial class SharpIppClient : ISharpIppClient
     {
         var isSecured = printer.Scheme.Equals( "https", StringComparison.OrdinalIgnoreCase )
             || printer.Scheme.Equals( "ipps", StringComparison.OrdinalIgnoreCase );
+        var defaultPort = isSecured ? 443 : 631;
         var uriBuilder = new UriBuilder( printer )
         {
             Scheme = isSecured ? "https" : "http",
-            Port = printer.Port == -1 ? 631 : printer.Port
+            Port = printer.Port == -1 ? defaultPort : printer.Port,
         };
         return new HttpRequestMessage( HttpMethod.Post, uriBuilder.Uri );
     }
